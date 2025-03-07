@@ -10,12 +10,11 @@ body {
   transition: all 0.3s ease;
 }
 
-/* Тёмная тема */
 body.theme-dark {
   background: linear-gradient(to bottom, #3a3a3a, #1a1a1a);
   color: #ffffff;
 }
-/* Светлая тема */
+
 body.theme-light {
   background: linear-gradient(to bottom, #f7f7f7, #e0e0e0);
   color: #333333;
@@ -45,7 +44,6 @@ body.theme-light {
   padding: 1rem;
   margin: 0 auto;
 }
-/* Центрируем карточку и ограничиваем ширину */
 .card {
   background-color: rgba(255, 255, 255, 0.05);
   border-radius: 1rem;
@@ -54,8 +52,8 @@ body.theme-light {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
-  max-width: 900px; /* ограничиваем ширину на больших экранах */
-  margin: 0 auto;   /* центрируем */
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 /* Превью аватара */
@@ -156,16 +154,14 @@ body.theme-light {
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 
-/* Контейнер для поля ссылки */
+/* Контейнер для поля ссылки (выводится в блоке action-buttons) */
 .link-container {
-  margin-top: 0.5rem;
+  margin-left: 1rem;
   display: flex;
-  justify-content: center;
-  width: 100%;
+  align-items: center;
 }
 .link-container input {
-  width: 80%;
-  max-width: 300px;
+  width: 150px;
   padding: 4px;
   font-size: 0.85rem;
   border: 1px solid #ccc;
@@ -178,6 +174,47 @@ body.theme-light {
 }
 .link-container input:focus {
   outline: 2px solid #4b5bd7;
+}
+
+/* Модальное окно для preview data URL */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  max-width: 90%;
+  text-align: center;
+}
+.modal-content textarea {
+  width: 100%;
+  height: 80px;
+}
+.modal-content img {
+  max-width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+.modal-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: #fff;
+  cursor: pointer;
 }
 
 /* Кнопка темы в нижней части */
@@ -262,9 +299,11 @@ body.theme-light {
 
 /* Медиа-запросы для больших экранов (min-width: 1024px) */
 @media (min-width: 1024px) {
-  /* .card уже max-width:900px и margin:0 auto */
-  /* Увеличим поле ссылки */
+  .card {
+    max-width: 900px;
+    margin: 0 auto;
+  }
   .link-container input {
-    max-width: 400px; /* Можно делать поле ещё шире на больших экранах */
+    max-width: 400px;
   }
 }

@@ -27,7 +27,6 @@
       <!-- Превью аватара -->
       <div class="avatar-preview">
         <div id="portrait" class="avatar-frame">
-          <!-- Убедитесь, что все изображения лежат в папке assets и загружаются по HTTPS -->
           <img id="body" src="assets/body/body1.png" alt="Тело">
           <img id="face" src="assets/face/face1.png" alt="Лицо">
           <img id="hair" src="assets/hair/hair1.png" alt="Волосы">
@@ -41,36 +40,56 @@
         <div class="controls-grid">
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('face')"><i class="fas fa-arrow-left"></i></button>
-              <button class="btn-control" onclick="nextPart('face')"><i class="fas fa-arrow-right"></i></button>
+              <button class="btn-control" onclick="prevPart('face')">
+                <i class="fas fa-arrow-left"></i>
+              </button>
+              <button class="btn-control" onclick="nextPart('face')">
+                <i class="fas fa-arrow-right"></i>
+              </button>
             </div>
             <span class="control-label">Лицо</span>
           </div>
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('eyes')"><i class="fas fa-arrow-left"></i></button>
-              <button class="btn-control" onclick="nextPart('eyes')"><i class="fas fa-arrow-right"></i></button>
+              <button class="btn-control" onclick="prevPart('eyes')">
+                <i class="fas fa-arrow-left"></i>
+              </button>
+              <button class="btn-control" onclick="nextPart('eyes')">
+                <i class="fas fa-arrow-right"></i>
+              </button>
             </div>
             <span class="control-label">Глаза</span>
           </div>
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('hair')"><i class="fas fa-arrow-left"></i></button>
-              <button class="btn-control" onclick="nextPart('hair')"><i class="fas fa-arrow-right"></i></button>
+              <button class="btn-control" onclick="prevPart('hair')">
+                <i class="fas fa-arrow-left"></i>
+              </button>
+              <button class="btn-control" onclick="nextPart('hair')">
+                <i class="fas fa-arrow-right"></i>
+              </button>
             </div>
             <span class="control-label">Волосы</span>
           </div>
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('mouth')"><i class="fas fa-arrow-left"></i></button>
-              <button class="btn-control" onclick="nextPart('mouth')"><i class="fas fa-arrow-right"></i></button>
+              <button class="btn-control" onclick="prevPart('mouth')">
+                <i class="fas fa-arrow-left"></i>
+              </button>
+              <button class="btn-control" onclick="nextPart('mouth')">
+                <i class="fas fa-arrow-right"></i>
+              </button>
             </div>
             <span class="control-label">Рот</span>
           </div>
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('body')"><i class="fas fa-arrow-left"></i></button>
-              <button class="btn-control" onclick="nextPart('body')"><i class="fas fa-arrow-right"></i></button>
+              <button class="btn-control" onclick="prevPart('body')">
+                <i class="fas fa-arrow-left"></i>
+              </button>
+              <button class="btn-control" onclick="nextPart('body')">
+                <i class="fas fa-arrow-right"></i>
+              </button>
             </div>
             <span class="control-label">Одежда</span>
           </div>
@@ -80,7 +99,7 @@
           </div>
         </div>
 
-        <!-- Кнопки действий + поле для ссылки -->
+        <!-- Кнопки действий и поле для ссылки (будет заполнено в модальном окне) -->
         <div class="action-buttons">
           <button class="btn-action" onclick="randomizeAvatar()">
             <i class="fas fa-dice"></i> Случайный
@@ -91,11 +110,20 @@
           <button class="btn-action" onclick="copyURL()">
             <i class="fas fa-copy"></i> Копировать URL
           </button>
-          <div id="link-container" class="link-container"></div>
         </div>
       </div>
     </div>
   </main>
+
+  <!-- Модальное окно для показа data URL (показывается при сохранении/копировании) -->
+  <div id="modal-overlay" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <button id="modal-close" class="modal-close">&times;</button>
+      <p>Скопируйте ссылку ниже или нажмите на изображение для сохранения:</p>
+      <input id="modal-link" type="text" readonly>
+      <img id="modal-img" src="" alt="Предварительный просмотр">
+    </div>
+  </div>
 
   <!-- Кнопка смены темы вынесена в отдельный блок внизу страницы -->
   <div class="theme-container">
