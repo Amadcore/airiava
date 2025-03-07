@@ -8,6 +8,8 @@ const parts = {
 
 function updatePart(part) {
   const img = document.getElementById(part);
+  // Если возникают CORS-ошибки, уберите crossOrigin="anonymous" и useCORS:true
+  // img.src = `assets/${part}/${part}${parts[part].current}.png?${Date.now()}`; // Можно добавить ? для кэширования
   img.src = `assets/${part}/${part}${parts[part].current}.png`;
   img.alt = `${part} ${parts[part].current}`;
   img.classList.add('animate-fade-in');
@@ -41,10 +43,15 @@ function randomizeAvatar() {
   }
 }
 
-/* Функция, которая генерирует итоговое изображение размером 1000x1000px */
-async function generateImageDataURL() {
+/* Генерируем 1000x1000 картинку и открываем её в новом окне */
+async function savePortrait() {
+  const saveButton = document.querySelectorAll('.btn-action')[1];
+  saveButton.textContent = 'Генерация...';
+  saveButton.disabled = true;
+
   const portrait = document.getElementById('portrait');
-  // Создаем временный контейнер
+
+  // Временный контейнер
   const tempContainer = document.createElement('div');
   tempContainer.style.position = 'absolute';
   tempContainer.style.left = '-9999px';
@@ -53,7 +60,7 @@ async function generateImageDataURL() {
   tempContainer.style.backgroundColor = portrait.style.backgroundColor || '#000';
   tempContainer.style.overflow = 'hidden';
 
-  // Клонируем слои с новыми размерами
+  // Копируем слои
   const images = portrait.querySelectorAll('img');
   images.forEach(img => {
     const clone = img.cloneNode(true);
@@ -65,63 +72,27 @@ async function generateImageDataURL() {
     clone.style.objectFit = 'cover';
     tempContainer.appendChild(clone);
   });
+
   document.body.appendChild(tempContainer);
 
   try {
     const canvas = await html2canvas(tempContainer, {
-      useCORS: true,
+      // useCORS: true, // Если возникают проблемы, попробуйте отключить
       backgroundColor: portrait.style.backgroundColor || '#000',
       width: 1000,
       height: 1000,
       scale: 1
     });
     const dataUrl = canvas.toDataURL('image/png');
-    return dataUrl;
-  } finally {
-    document.body.removeChild(tempContainer);
-  }
-}
-
-/* Кнопка "Сохранить": открывает новое окно с изображением */
-async function savePortrait() {
-  const saveButton = document.querySelectorAll('.btn-action')[1];
-  saveButton.textContent = 'Генерация...';
-  saveButton.disabled = true;
-
-  try {
-    const dataUrl = await generateImageDataURL();
     window.open(dataUrl, '_blank');
-    alert("Откройте новое окно и сохраните изображение через опции браузера.");
+    alert("Откройте новое окно и сохраните изображение через стандартное меню.");
   } catch (error) {
-    console.error('Ошибка генерации изображения:', error);
-    alert('Ошибка при создании изображения.');
+    console.error('Ошибка сохранения:', error);
+    alert('Ошибка при создании изображения. Проверьте CORS / Mixed Content.');
   } finally {
     saveButton.textContent = 'Сохранить';
     saveButton.disabled = false;
-  }
-}
-
-/* Кнопка "Копировать URL": копирует dataURL в буфер обмена или открывает новое окно */
-async function copyURL() {
-  const copyButton = document.querySelectorAll('.btn-action')[2];
-  copyButton.textContent = 'Генерация...';
-  copyButton.disabled = true;
-
-  try {
-    const dataUrl = await generateImageDataURL();
-    if (navigator.clipboard) {
-      await navigator.clipboard.writeText(dataUrl);
-      alert("URL изображения скопирован в буфер обмена. Вы можете вставить его в браузере для сохранения.");
-    } else {
-      window.open(dataUrl, '_blank');
-      alert("Откройте новое окно и сохраните изображение вручную.");
-    }
-  } catch (error) {
-    console.error('Ошибка копирования URL:', error);
-    alert('Ошибка при генерации URL изображения.');
-  } finally {
-    copyButton.textContent = 'Копировать URL';
-    copyButton.disabled = false;
+    document.body.removeChild(tempContainer);
   }
 }
 

@@ -6,13 +6,13 @@
   <title>Airicore Avatar Forge</title>
   <!-- Шрифты: Days One для заголовков, Roboto для остального текста -->
   <link href="https://fonts.googleapis.com/css2?family=Days+One&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  <!-- Font Awesome для иконок -->
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Наш CSS -->
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
-  <!-- html2canvas для генерации изображения -->
+  <!-- html2canvas для сохранения -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
-  <!-- Наш JS -->
+  <!-- JS -->
   <script src="script.js" defer></script>
 </head>
 <body class="theme-dark">
@@ -28,11 +28,12 @@
       <!-- Превью аватара -->
       <div class="avatar-preview">
         <div id="portrait" class="avatar-frame">
-          <img id="body" src="assets/body/body1.png" alt="Тело" crossOrigin="anonymous">
-          <img id="face" src="assets/face/face1.png" alt="Лицо" crossOrigin="anonymous">
-          <img id="hair" src="assets/hair/hair1.png" alt="Волосы" crossOrigin="anonymous">
-          <img id="eyes" src="assets/eyes/eyes1.png" alt="Глаза" crossOrigin="anonymous">
-          <img id="mouth" src="assets/mouth/mouth1.png" alt="Рот" crossOrigin="anonymous">
+          <!-- Убедитесь, что картинки лежат в /assets и грузятся по тому же домену -->
+          <img id="body" src="assets/body/body1.png" alt="Тело">
+          <img id="face" src="assets/face/face1.png" alt="Лицо">
+          <img id="hair" src="assets/hair/hair1.png" alt="Волосы">
+          <img id="eyes" src="assets/eyes/eyes1.png" alt="Глаза">
+          <img id="mouth" src="assets/mouth/mouth1.png" alt="Рот">
         </div>
       </div>
       <!-- Элементы управления -->
@@ -41,60 +42,40 @@
           <!-- Лицо -->
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('face')">
-                <i class="fas fa-arrow-left"></i>
-              </button>
-              <button class="btn-control" onclick="nextPart('face')">
-                <i class="fas fa-arrow-right"></i>
-              </button>
+              <button class="btn-control" onclick="prevPart('face')"><i class="fas fa-arrow-left"></i></button>
+              <button class="btn-control" onclick="nextPart('face')"><i class="fas fa-arrow-right"></i></button>
             </div>
             <span class="control-label">Лицо</span>
           </div>
           <!-- Глаза -->
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('eyes')">
-                <i class="fas fa-arrow-left"></i>
-              </button>
-              <button class="btn-control" onclick="nextPart('eyes')">
-                <i class="fas fa-arrow-right"></i>
-              </button>
+              <button class="btn-control" onclick="prevPart('eyes')"><i class="fas fa-arrow-left"></i></button>
+              <button class="btn-control" onclick="nextPart('eyes')"><i class="fas fa-arrow-right"></i></button>
             </div>
             <span class="control-label">Глаза</span>
           </div>
           <!-- Волосы -->
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('hair')">
-                <i class="fas fa-arrow-left"></i>
-              </button>
-              <button class="btn-control" onclick="nextPart('hair')">
-                <i class="fas fa-arrow-right"></i>
-              </button>
+              <button class="btn-control" onclick="prevPart('hair')"><i class="fas fa-arrow-left"></i></button>
+              <button class="btn-control" onclick="nextPart('hair')"><i class="fas fa-arrow-right"></i></button>
             </div>
             <span class="control-label">Волосы</span>
           </div>
           <!-- Рот -->
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('mouth')">
-                <i class="fas fa-arrow-left"></i>
-              </button>
-              <button class="btn-control" onclick="nextPart('mouth')">
-                <i class="fas fa-arrow-right"></i>
-              </button>
+              <button class="btn-control" onclick="prevPart('mouth')"><i class="fas fa-arrow-left"></i></button>
+              <button class="btn-control" onclick="nextPart('mouth')"><i class="fas fa-arrow-right"></i></button>
             </div>
             <span class="control-label">Рот</span>
           </div>
           <!-- Одежда -->
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('body')">
-                <i class="fas fa-arrow-left"></i>
-              </button>
-              <button class="btn-control" onclick="nextPart('body')">
-                <i class="fas fa-arrow-right"></i>
-              </button>
+              <button class="btn-control" onclick="prevPart('body')"><i class="fas fa-arrow-left"></i></button>
+              <button class="btn-control" onclick="nextPart('body')"><i class="fas fa-arrow-right"></i></button>
             </div>
             <span class="control-label">Одежда</span>
           </div>
@@ -104,15 +85,13 @@
             <input type="color" class="color-picker" onchange="changeBgColor(this.value)">
           </div>
         </div>
+        <!-- Кнопки действий -->
         <div class="action-buttons">
           <button class="btn-action" onclick="randomizeAvatar()">
             <i class="fas fa-dice"></i> Случайный
           </button>
           <button class="btn-action" onclick="savePortrait()">
             <i class="fas fa-save"></i> Сохранить
-          </button>
-          <button class="btn-action" onclick="copyURL()">
-            <i class="fas fa-copy"></i> Копировать URL
           </button>
         </div>
       </div>

@@ -16,7 +16,7 @@ body.theme-dark {
   background: linear-gradient(to bottom, #3a3a3a, #1a1a1a);
   color: #ffffff;
 }
-/* Светлая тема – нейтральный, чистый фон */
+/* Светлая тема */
 body.theme-light {
   background: linear-gradient(to bottom, #f7f7f7, #e0e0e0);
   color: #333333;
@@ -146,7 +146,7 @@ body.theme-light {
 
 /* Кнопки действий */
 .action-buttons {
-  display: flex;
+  display: flex; /* Две кнопки в строку */
   justify-content: center;
   gap: 1rem;
 }
