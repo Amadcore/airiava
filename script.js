@@ -41,7 +41,7 @@ function randomizeAvatar() {
   }
 }
 
-/* Функция сохранения: генерирует изображение 1000x1000, инициирует скачивание и открывает новое окно с dataURL */
+/* Функция сохранения: генерирует изображение 1000x1000, инициирует скачивание и открывает окно с dataURL */
 async function savePortrait() {
   const saveButton = document.querySelectorAll('.btn-action')[1];
   saveButton.textContent = 'Генерация...';
@@ -145,16 +145,16 @@ async function copyURL() {
       }
     }
     const linkContainer = document.getElementById('link-container');
-    linkContainer.innerHTML = '';
+    linkContainer.innerHTML = "";
     const inputField = document.createElement('input');
-    inputField.type = 'text';
+    inputField.type = "text";
     inputField.readOnly = true;
     inputField.value = dataUrl;
     inputField.title = dataUrl;
-    inputField.style.width = '150px';
-    inputField.style.whiteSpace = 'nowrap';
-    inputField.style.overflow = 'hidden';
-    inputField.style.textOverflow = 'ellipsis';
+    inputField.style.width = "150px";
+    inputField.style.whiteSpace = "nowrap";
+    inputField.style.overflow = "hidden";
+    inputField.style.textOverflow = "ellipsis";
     inputField.addEventListener('dblclick', () => {
       inputField.select();
     });
@@ -163,7 +163,7 @@ async function copyURL() {
     console.error('Ошибка при копировании URL:', error);
     alert('Ошибка при создании изображения. Проверьте настройки CORS или Mixed Content.');
   } finally {
-    copyButton.textContent = 'Копировать URL';
+    copyButton.textContent = "Копировать URL";
     copyButton.disabled = false;
     document.body.removeChild(tempContainer);
   }
@@ -175,10 +175,41 @@ document.getElementById('theme-toggle').addEventListener('click', () => {
   if (body.classList.contains('theme-dark')) {
     body.classList.remove('theme-dark');
     body.classList.add('theme-light');
+    // Обновляем обе кнопки темы, если они присутствуют
     document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
+    const compact = document.getElementById('theme-toggle-compact');
+    if (compact) {
+      compact.innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
+    }
   } else {
     body.classList.remove('theme-light');
     body.classList.add('theme-dark');
     document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
+    const compact = document.getElementById('theme-toggle-compact');
+    if (compact) {
+      compact.innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
+    }
+  }
+});
+
+/* Переключение компактной кнопки темы (на нижней панели) */
+document.getElementById('theme-toggle-compact').addEventListener('click', () => {
+  const body = document.body;
+  if (body.classList.contains('theme-dark')) {
+    body.classList.remove('theme-dark');
+    body.classList.add('theme-light');
+    document.getElementById('theme-toggle-compact').innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
+    const mainToggle = document.getElementById('theme-toggle');
+    if (mainToggle) {
+      mainToggle.innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
+    }
+  } else {
+    body.classList.remove('theme-light');
+    body.classList.add('theme-dark');
+    document.getElementById('theme-toggle-compact').innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
+    const mainToggle = document.getElementById('theme-toggle');
+    if (mainToggle) {
+      mainToggle.innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
+    }
   }
 });

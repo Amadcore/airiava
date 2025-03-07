@@ -10,6 +10,7 @@ body {
   transition: all 0.3s ease;
 }
 
+/* Тёмная и светлая темы */
 body.theme-dark {
   background: linear-gradient(to bottom, #3a3a3a, #1a1a1a);
   color: #ffffff;
@@ -27,13 +28,13 @@ body.theme-light {
 }
 .title {
   font-family: 'Days One', sans-serif;
-  font-size: 2rem;
+  font-size: 1.8rem;
   color: inherit;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
 }
 .subtitle {
   margin-top: 0.3rem;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   opacity: 0.85;
 }
 
@@ -116,7 +117,7 @@ body.theme-light {
 }
 .control-label {
   margin-top: 0.3rem;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 
 /* Цветовой селектор */
@@ -157,9 +158,11 @@ body.theme-light {
   margin-top: 0.5rem;
   display: flex;
   justify-content: center;
+  width: 100%;
 }
 .link-container input {
-  width: 150px;
+  width: 80%;
+  max-width: 300px;
   padding: 4px;
   font-size: 0.85rem;
   border: 1px solid #ccc;
@@ -196,7 +199,7 @@ body.theme-light {
 
 /* Футер */
 .footer {
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   padding: 1rem;
   text-align: center;
   font-size: 0.8rem;
@@ -250,6 +253,6 @@ body.theme-light {
     width: 90%;
   }
   .title {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
   }
 }
