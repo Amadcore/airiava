@@ -8,6 +8,7 @@ const parts = {
 
 function updatePart(part) {
   const img = document.getElementById(part);
+  // Если возникают CORS-ошибки, можно добавить ?timestamp для обновления кэша
   img.src = `assets/${part}/${part}${parts[part].current}.png`;
   img.alt = `${part} ${parts[part].current}`;
   img.classList.add('animate-fade-in');
@@ -41,7 +42,33 @@ function randomizeAvatar() {
   }
 }
 
-/* Функция сохранения: генерирует изображение 1000x1000, инициирует скачивание и открывает модальное окно с dataURL */
+/* Функция загрузки на imgBB. Принимает dataUrl, удаляет префикс и отправляет POST-запрос.
+   Возвращает Promise, который резолвится в короткую ссылку. */
+async function uploadToImgBB(dataUrl) {
+  const base64 = dataUrl.replace(/^data:image\/\w+;base64,/, "");
+  const formData = new URLSearchParams();
+  formData.append("image", base64);
+  
+  // Ваш API-ключ от imgBB
+  const apiKey = "efe2ee7dac2ce58757259bce5532966b";
+  const endpoint = `https://api.imgbb.com/1/upload?key=${apiKey}`;
+
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: formData.toString()
+  });
+  const result = await response.json();
+  if (result.success) {
+    return result.data.url;
+  } else {
+    throw new Error(result.error ? result.error.message : "Ошибка загрузки на imgBB");
+  }
+}
+
+/* Функция сохранения: генерирует изображение 1000x1000, инициирует скачивание и показывает модальное окно с dataURL */
 async function savePortrait() {
   const saveButton = document.querySelectorAll('.btn-action')[1];
   saveButton.textContent = 'Генерация...';
@@ -74,14 +101,16 @@ async function savePortrait() {
       scale: 1
     });
     const dataUrl = canvas.toDataURL('image/png');
-    // Пытаемся инициировать скачивание
+    
+    // Инициируем скачивание
     const downloadLink = document.createElement('a');
     downloadLink.href = dataUrl;
     downloadLink.download = `avatar_${Date.now()}.png`;
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
-    // Показываем модальное окно с dataUrl
+    
+    // Показываем модальное окно с data URL (модальное окно определено в index.html)
     showModal(dataUrl);
   } catch (error) {
     console.error('Ошибка при сохранении изображения:', error);
@@ -93,7 +122,8 @@ async function savePortrait() {
   }
 }
 
-/* Функция копирования URL: генерирует dataURL, пытается автокопировать и выводит поле в #link-container */
+/* Функция копирования URL: генерирует dataURL, загружает его на imgBB для короткой ссылки,
+   копирует короткую ссылку и выводит её в поле в #link-container */
 async function copyURL() {
   const copyButton = document.querySelector('.btn-action[onclick="copyURL()"]');
   copyButton.textContent = 'Генерация...';
@@ -126,22 +156,30 @@ async function copyURL() {
       scale: 1
     });
     const dataUrl = canvas.toDataURL('image/png');
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      try {
-        await navigator.clipboard.writeText(dataUrl);
-        alert("Ссылка на изображение скопирована в буфер обмена!");
-      } catch (err) {
-        alert("Автоматическое копирование не поддерживается. Скопируйте ссылку вручную.");
+    
+    // Пытаемся загрузить на imgBB для получения короткой ссылки
+    let shortUrl;
+    try {
+      shortUrl = await uploadToImgBB(dataUrl);
+      // Попытка автокопирования короткой ссылки
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shortUrl);
+        alert("Короткая ссылка скопирована в буфер обмена!");
       }
+    } catch (uploadError) {
+      alert("Не удалось загрузить изображение на imgBB. Используйте data URL.");
+      shortUrl = dataUrl;
     }
+    
+    // Выводим поле в #link-container
     const linkContainer = document.getElementById('link-container');
     linkContainer.innerHTML = "";
     const inputField = document.createElement('input');
     inputField.type = "text";
     inputField.readOnly = true;
-    inputField.value = dataUrl;
-    inputField.title = dataUrl;
-    inputField.style.width = "150px";
+    inputField.value = shortUrl;
+    inputField.title = shortUrl;
+    inputField.style.width = "300px"; // увеличено для удобства
     inputField.style.whiteSpace = "nowrap";
     inputField.style.overflow = "hidden";
     inputField.style.textOverflow = "ellipsis";
@@ -159,7 +197,7 @@ async function copyURL() {
   }
 }
 
-/* Функция показа модального окна с dataURL */
+/* Функция показа модального окна с data URL */
 function showModal(dataUrl) {
   const modal = document.getElementById('modal-overlay');
   const modalLink = document.getElementById('modal-link');
@@ -175,45 +213,26 @@ document.getElementById('modal-close').addEventListener('click', () => {
   modal.style.display = 'none';
 });
 
-/* Переключение темы */
+/* Переключение темы через кнопку в шапке и компактную кнопку внизу */
 document.getElementById('theme-toggle').addEventListener('click', () => {
+  toggleTheme();
+});
+
+document.getElementById('theme-toggle-compact').addEventListener('click', () => {
+  toggleTheme();
+});
+
+function toggleTheme() {
   const body = document.body;
   if (body.classList.contains('theme-dark')) {
     body.classList.remove('theme-dark');
     body.classList.add('theme-light');
     document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
-    const compact = document.getElementById('theme-toggle-compact');
-    if (compact) {
-      compact.innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
-    }
+    document.getElementById('theme-toggle-compact').innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
   } else {
     body.classList.remove('theme-light');
     body.classList.add('theme-dark');
     document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
-    const compact = document.getElementById('theme-toggle-compact');
-    if (compact) {
-      compact.innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
-    }
-  }
-});
-
-document.getElementById('theme-toggle-compact').addEventListener('click', () => {
-  const body = document.body;
-  if (body.classList.contains('theme-dark')) {
-    body.classList.remove('theme-dark');
-    body.classList.add('theme-light');
-    document.getElementById('theme-toggle-compact').innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
-    const mainToggle = document.getElementById('theme-toggle');
-    if (mainToggle) {
-      mainToggle.innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
-    }
-  } else {
-    body.classList.remove('theme-light');
-    body.classList.add('theme-dark');
     document.getElementById('theme-toggle-compact').innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
-    const mainToggle = document.getElementById('theme-toggle');
-    if (mainToggle) {
-      mainToggle.innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
-    }
   }
-});
+}
