@@ -8,7 +8,7 @@ const parts = {
 
 function updatePart(part) {
   const img = document.getElementById(part);
-  // Если CORS-ошибки, уберите crossOrigin и useCORS
+  // Если возникают CORS-ошибки, попробуйте убрать crossOrigin или добавить параметр ?timestamp для кэширования
   img.src = `assets/${part}/${part}${parts[part].current}.png`;
   img.alt = `${part} ${parts[part].current}`;
   img.classList.add('animate-fade-in');
@@ -42,7 +42,7 @@ function randomizeAvatar() {
   }
 }
 
-/* Вместо открытия в новом окне: ПОЛНОСТЬЮ ЗАМЕНЯЕМ СТРАНИЦУ на <img> + инструкцию */
+/* Функция сохранения: генерирует изображение, инициирует скачивание и открывает новое окно с ссылкой */
 async function savePortrait() {
   const saveButton = document.querySelectorAll('.btn-action')[1];
   saveButton.textContent = 'Генерация...';
@@ -50,7 +50,7 @@ async function savePortrait() {
 
   const portrait = document.getElementById('portrait');
 
-  // Создаем временный контейнер 1000x1000
+  // Создаем временный контейнер размером 1000x1000 пикселей
   const tempContainer = document.createElement('div');
   tempContainer.style.position = 'absolute';
   tempContainer.style.left = '-9999px';
@@ -59,7 +59,7 @@ async function savePortrait() {
   tempContainer.style.backgroundColor = portrait.style.backgroundColor || '#000';
   tempContainer.style.overflow = 'hidden';
 
-  // Копируем слои
+  // Клонируем все слои (img) с фиксированными размерами
   const images = portrait.querySelectorAll('img');
   images.forEach(img => {
     const clone = img.cloneNode(true);
@@ -75,7 +75,7 @@ async function savePortrait() {
 
   try {
     const canvas = await html2canvas(tempContainer, {
-      // useCORS: true, // убирайте, если мешает
+      // Если возникают проблемы с CORS, можно попробовать отключить useCORS
       backgroundColor: portrait.style.backgroundColor || '#000',
       width: 1000,
       height: 1000,
@@ -83,18 +83,34 @@ async function savePortrait() {
     });
     const dataUrl = canvas.toDataURL('image/png');
 
-    // Теперь ПОЛНОСТЬЮ меняем страницу
-    document.body.innerHTML = `
-      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:1rem;">
-        <h2 style="margin-bottom:1rem;">Нажмите и удерживайте изображение, чтобы сохранить</h2>
-        <img src="${dataUrl}" style="max-width:90%; height:auto; border:2px solid #ccc; border-radius:1rem;">
-      </div>
-    `;
-    // На iOS/Android внутри Telegram пользователь может удерживать картинку, чтобы сохранить
+    // Попытка инициировать скачивание через ссылку с атрибутом download
+    const downloadLink = document.createElement('a');
+    downloadLink.href = dataUrl;
+    downloadLink.download = `avatar_${Date.now()}.png`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+
+    // Пытаемся открыть новое окно с HTML-страницей для копирования URL
+    const newWindow = window.open();
+    if (newWindow) {
+      newWindow.document.write(`
+        <div style="padding:1rem; font-family: sans-serif;">
+          <p>Скопируйте ссылку ниже и откройте её в браузере для сохранения изображения:</p>
+          <textarea style="width:100%; height:80px;">${dataUrl}</textarea>
+          <p>Предварительный просмотр:</p>
+          <img src="${dataUrl}" style="max-width:100%; border:1px solid #ccc; border-radius:8px;">
+        </div>
+      `);
+    } else {
+      alert("Не удалось открыть новое окно. Скопируйте эту ссылку вручную:\n" + dataUrl);
+    }
   } catch (error) {
-    console.error('Ошибка сохранения:', error);
-    alert('Ошибка при создании изображения (CORS?).');
+    console.error('Ошибка при сохранении изображения:', error);
+    alert('Ошибка при создании изображения. Проверьте настройки CORS или Mixed Content.');
   } finally {
+    saveButton.textContent = 'Сохранить';
+    saveButton.disabled = false;
     document.body.removeChild(tempContainer);
   }
 }
