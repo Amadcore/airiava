@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Airicore Avatar Forge</title>
+  <title>Airicore Ava</title>
   <!-- Шрифты: Days One для заголовков, Roboto для остального текста -->
   <link href="https://fonts.googleapis.com/css2?family=Days+One&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   <!-- Font Awesome для иконок -->
@@ -17,18 +17,18 @@
 </head>
 <body class="theme-dark">
   <header class="header">
-    <h1 class="title">Airicore Avatar Forge</h1>
+    <h1 class="title">Airicore Ava</h1>
     <p class="subtitle">Создай уникальный аватар для студии</p>
     <button id="theme-toggle" class="theme-toggle">
       <i class="fas fa-sun"></i> Светлая тема
     </button>
   </header>
+
   <main class="container">
     <div class="card">
       <!-- Превью аватара -->
       <div class="avatar-preview">
         <div id="portrait" class="avatar-frame">
-          <!-- Убедитесь, что изображения находятся в папке assets и загружаются через HTTPS -->
           <img id="body" src="assets/body/body1.png" alt="Тело">
           <img id="face" src="assets/face/face1.png" alt="Лицо">
           <img id="hair" src="assets/hair/hair1.png" alt="Волосы">
@@ -36,6 +36,7 @@
           <img id="mouth" src="assets/mouth/mouth1.png" alt="Рот">
         </div>
       </div>
+
       <!-- Элементы управления -->
       <div class="controls">
         <div class="controls-grid">
@@ -105,7 +106,8 @@
             <input type="color" class="color-picker" onchange="changeBgColor(this.value)">
           </div>
         </div>
-        <!-- Кнопки действий -->
+
+        <!-- Кнопки действий + поле для ссылки -->
         <div class="action-buttons">
           <button class="btn-action" onclick="randomizeAvatar()">
             <i class="fas fa-dice"></i> Случайный
@@ -116,12 +118,13 @@
           <button class="btn-action" onclick="copyURL()">
             <i class="fas fa-copy"></i> Копировать URL
           </button>
+          <!-- Контейнер для ссылки -->
+          <div id="link-container" class="link-container"></div>
         </div>
       </div>
     </div>
-    <!-- Контейнер для вывода сгенерированного URL -->
-    <div id="link-container" style="margin-top: 1rem;"></div>
   </main>
+
   <footer class="footer">
     <p>© 2025 Airicore Avatar Forge. Художник <strong>Hellbrush</strong></p>
     <div class="social-links">

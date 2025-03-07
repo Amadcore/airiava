@@ -8,7 +8,7 @@ const parts = {
 
 function updatePart(part) {
   const img = document.getElementById(part);
-  // Если возникают CORS-ошибки, можно добавить параметр ?timestamp для обновления кэша
+  // Если возникают CORS-ошибки, попробуйте добавить параметр ?timestamp
   img.src = `assets/${part}/${part}${parts[part].current}.png`;
   img.alt = `${part} ${parts[part].current}`;
   img.classList.add('animate-fade-in');
@@ -42,15 +42,13 @@ function randomizeAvatar() {
   }
 }
 
-/* Функция сохранения: генерирует изображение 1000x1000, инициирует скачивание и открывает новое окно с data URL */
+/* Сохранение: генерируем 1000x1000, пытаемся скачать и открыть новую страницу с dataURL */
 async function savePortrait() {
   const saveButton = document.querySelectorAll('.btn-action')[1];
   saveButton.textContent = 'Генерация...';
   saveButton.disabled = true;
 
   const portrait = document.getElementById('portrait');
-
-  // Создаем временный контейнер размером 1000x1000 пикселей
   const tempContainer = document.createElement('div');
   tempContainer.style.position = 'absolute';
   tempContainer.style.left = '-9999px';
@@ -59,7 +57,6 @@ async function savePortrait() {
   tempContainer.style.backgroundColor = portrait.style.backgroundColor || '#000';
   tempContainer.style.overflow = 'hidden';
 
-  // Клонируем все слои (img) с фиксированными размерами 1000x1000
   const images = portrait.querySelectorAll('img');
   images.forEach(img => {
     const clone = img.cloneNode(true);
@@ -82,7 +79,7 @@ async function savePortrait() {
     });
     const dataUrl = canvas.toDataURL('image/png');
 
-    // Попытка инициировать скачивание через ссылку с атрибутом download
+    // Пытаемся скачать
     const downloadLink = document.createElement('a');
     downloadLink.href = dataUrl;
     downloadLink.download = `avatar_${Date.now()}.png`;
@@ -90,7 +87,7 @@ async function savePortrait() {
     downloadLink.click();
     document.body.removeChild(downloadLink);
 
-    // Открываем новое окно с HTML-страницей, содержащей data URL (если возможно)
+    // Пытаемся открыть новое окно с HTML-страницей
     const newWindow = window.open();
     if (newWindow) {
       newWindow.document.write(`
@@ -114,15 +111,13 @@ async function savePortrait() {
   }
 }
 
-/* Функция копирования URL: генерирует data URL и выводит его в маленьком input-поле в контейнере #link-container */
+/* Копировать URL: генерируем dataURL, пытаемся автокопировать и выводим в link-container */
 async function copyURL() {
   const copyButton = document.querySelector('.btn-action[onclick="copyURL()"]');
   copyButton.textContent = 'Генерация...';
   copyButton.disabled = true;
 
   const portrait = document.getElementById('portrait');
-
-  // Создаем временный контейнер 1000x1000 пикселей
   const tempContainer = document.createElement('div');
   tempContainer.style.position = 'absolute';
   tempContainer.style.left = '-9999px';
@@ -153,40 +148,36 @@ async function copyURL() {
     });
     const dataUrl = canvas.toDataURL('image/png');
 
-    // Пытаемся автоматически скопировать dataUrl в буфер обмена
+    // Автокопирование (если доступно)
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      await navigator.clipboard.writeText(dataUrl);
-      alert("Ссылка на изображение скопирована в буфер обмена!");
+      try {
+        await navigator.clipboard.writeText(dataUrl);
+        alert("Ссылка на изображение скопирована в буфер обмена!");
+      } catch (err) {
+        console.warn("Автоматическое копирование не сработало:", err);
+      }
     }
 
-    // Выводим маленькое input-поле в контейнере с id "link-container"
-    let linkContainer = document.getElementById('link-container');
-    if (!linkContainer) {
-      linkContainer = document.createElement('div');
-      linkContainer.id = 'link-container';
-      // Можно добавить стили через CSS; здесь inline-стили для примера
-      linkContainer.style.marginTop = '1rem';
-      document.querySelector('.container').appendChild(linkContainer);
-    }
-    // Очищаем содержимое контейнера и создаем input-поле
-    linkContainer.innerHTML = '';
+    // Выводим поле в .link-container
+    const linkContainer = document.getElementById('link-container');
+    linkContainer.innerHTML = ''; // очищаем старое
+
+    // Создаем input (маленький, 100px)
     const inputField = document.createElement('input');
     inputField.type = 'text';
-    inputField.value = dataUrl;
     inputField.readOnly = true;
-    inputField.style.width = '150px';
-    inputField.style.padding = '5px';
-    inputField.style.fontSize = '0.9rem';
-    inputField.style.border = '1px solid #ccc';
-    inputField.style.borderRadius = '4px';
+    inputField.value = dataUrl;
+    inputField.title = dataUrl; // полный URL по hover
+    // Усечение текста
+    inputField.style.width = '100px';
     inputField.style.whiteSpace = 'nowrap';
     inputField.style.overflow = 'hidden';
     inputField.style.textOverflow = 'ellipsis';
-    inputField.title = dataUrl; // полный URL по hover
-    // При двойном клике выделяем весь текст
-    inputField.addEventListener('dblclick', function() {
-      this.select();
+    // Двойной клик - выделяем
+    inputField.addEventListener('dblclick', () => {
+      inputField.select();
     });
+
     linkContainer.appendChild(inputField);
   } catch (error) {
     console.error('Ошибка при копировании URL:', error);
