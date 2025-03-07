@@ -5,7 +5,6 @@
   box-sizing: border-box;
 }
 
-/* Базовые стили */
 body {
   font-family: 'Roboto', sans-serif;
   transition: all 0.3s ease;
@@ -147,7 +146,6 @@ body.theme-light {
 /* Кнопки действий + контейнер для ссылки */
 .action-buttons {
   display: flex;
-  flex-wrap: wrap; /* чтобы при узком экране кнопки переносились */
   align-items: center;
   gap: 1rem;
 }
@@ -168,11 +166,10 @@ body.theme-light {
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 
-/* Поле для ссылки (создаётся динамически) */
+/* Поле для ссылки */
 .link-container {
   display: flex;
   align-items: center;
-  /* Можно добавить margin-left или другой отступ */
 }
 .link-container input {
   width: 100px;
@@ -225,24 +222,33 @@ body.theme-light {
   animation: fadeIn 0.5s ease-in;
 }
 
-/* Медиа-запросы для мобильных */
-@media (max-width: 768px) {
+/* Медиа-запросы для мобильных - более строгие (max-width:600px) */
+@media (max-width: 600px) {
   .card {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
   .avatar-frame {
-    width: 280px;
-    height: 280px;
+    width: 250px;
+    height: 250px;
   }
-  .controls-grid {
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  /* Делаем кнопки вертикальными */
+  .action-buttons {
+    flex-direction: column;
+    align-items: stretch; /* кнопки тянутся на всю ширину */
+    gap: 0.5rem;
   }
   .btn-action {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+    width: 100%;
+    text-align: center;
   }
-  .title {
-    font-size: 2rem;
+  /* Ссылка тоже на всю ширину */
+  .link-container {
+    width: 100%;
+    justify-content: center; /* по центру */
+  }
+  .link-container input {
+    width: 90%; /* почти всю ширину экрана */
+    margin: 0 auto;
   }
 }
