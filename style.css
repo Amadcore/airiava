@@ -154,7 +154,7 @@ body.theme-light {
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 
-/* Контейнер для поля ссылки (выводится в блоке action-buttons) */
+/* Контейнер для поля ссылки */
 .link-container {
   margin-left: 1rem;
   display: flex;
@@ -176,7 +176,7 @@ body.theme-light {
   outline: 2px solid #4b5bd7;
 }
 
-/* Модальное окно для preview data URL */
+/* Модальное окно для копирования ссылки */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -188,33 +188,52 @@ body.theme-light {
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  padding: 1rem;
 }
 .modal-content {
   background: #fff;
-  padding: 1rem;
+  width: 90%;
+  max-width: 500px;
+  padding: 1.5rem;
   border-radius: 8px;
-  max-width: 90%;
   text-align: center;
-}
-.modal-content textarea {
-  width: 100%;
-  height: 80px;
-}
-.modal-content img {
-  max-width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-top: 1rem;
+  position: relative;
 }
 .modal-close {
   position: absolute;
-  top: 8px;
-  right: 12px;
+  top: 0.5rem;
+  right: 0.5rem;
   background: transparent;
   border: none;
-  font-size: 2rem;
-  color: #fff;
+  font-size: 1.5rem;
   cursor: pointer;
+}
+.modal-content h2 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+#modal-link {
+  width: 100%;
+  height: 80px;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: none;
+}
+.modal-copy {
+  padding: 0.6rem 1rem;
+  background: linear-gradient(90deg, #4b5bd7, #8b5cf6);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.modal-copy:hover {
+  background: linear-gradient(90deg, #3a4ac4, #7a4de2);
 }
 
 /* Кнопка темы в нижней части */

@@ -8,7 +8,6 @@ const parts = {
 
 function updatePart(part) {
   const img = document.getElementById(part);
-  // Если возникают CORS-ошибки, можно добавить ?timestamp для обновления кэша
   img.src = `assets/${part}/${part}${parts[part].current}.png`;
   img.alt = `${part} ${parts[part].current}`;
   img.classList.add('animate-fade-in');
@@ -42,17 +41,13 @@ function randomizeAvatar() {
   }
 }
 
-/* Функция загрузки на imgBB. Принимает dataUrl, удаляет префикс и отправляет POST-запрос.
-   Возвращает Promise, который резолвится в короткую ссылку. */
+/* Функция загрузки на imgBB */
 async function uploadToImgBB(dataUrl) {
   const base64 = dataUrl.replace(/^data:image\/\w+;base64,/, "");
   const formData = new URLSearchParams();
   formData.append("image", base64);
-  
-  // Ваш API-ключ от imgBB
   const apiKey = "efe2ee7dac2ce58757259bce5532966b";
   const endpoint = `https://api.imgbb.com/1/upload?key=${apiKey}`;
-
   const response = await fetch(endpoint, {
     method: "POST",
     headers: {
@@ -68,7 +63,7 @@ async function uploadToImgBB(dataUrl) {
   }
 }
 
-/* Функция сохранения: генерирует изображение 1000x1000, инициирует скачивание и показывает модальное окно с dataURL */
+/* Функция сохранения: генерирует изображение 1000x1000, инициирует скачивание и открывает модальное окно с dataURL */
 async function savePortrait() {
   const saveButton = document.querySelectorAll('.btn-action')[1];
   saveButton.textContent = 'Генерация...';
@@ -101,16 +96,12 @@ async function savePortrait() {
       scale: 1
     });
     const dataUrl = canvas.toDataURL('image/png');
-    
-    // Инициируем скачивание
     const downloadLink = document.createElement('a');
     downloadLink.href = dataUrl;
     downloadLink.download = `avatar_${Date.now()}.png`;
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
-    
-    // Показываем модальное окно с data URL (модальное окно определено в index.html)
     showModal(dataUrl);
   } catch (error) {
     console.error('Ошибка при сохранении изображения:', error);
@@ -122,8 +113,7 @@ async function savePortrait() {
   }
 }
 
-/* Функция копирования URL: генерирует dataURL, загружает его на imgBB для короткой ссылки,
-   копирует короткую ссылку и выводит её в поле в #link-container */
+/* Функция копирования URL: генерирует dataURL, загружает на imgBB для короткой ссылки и открывает модальное окно */
 async function copyURL() {
   const copyButton = document.querySelector('.btn-action[onclick="copyURL()"]');
   copyButton.textContent = 'Генерация...';
@@ -156,37 +146,18 @@ async function copyURL() {
       scale: 1
     });
     const dataUrl = canvas.toDataURL('image/png');
-    
-    // Пытаемся загрузить на imgBB для получения короткой ссылки
     let shortUrl;
     try {
       shortUrl = await uploadToImgBB(dataUrl);
-      // Попытка автокопирования короткой ссылки
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(shortUrl);
         alert("Короткая ссылка скопирована в буфер обмена!");
       }
     } catch (uploadError) {
-      alert("Не удалось загрузить изображение на imgBB. Используйте data URL.");
+      alert("Не удалось загрузить изображение на imgBB. Используется длинная ссылка.");
       shortUrl = dataUrl;
     }
-    
-    // Выводим поле в #link-container
-    const linkContainer = document.getElementById('link-container');
-    linkContainer.innerHTML = "";
-    const inputField = document.createElement('input');
-    inputField.type = "text";
-    inputField.readOnly = true;
-    inputField.value = shortUrl;
-    inputField.title = shortUrl;
-    inputField.style.width = "300px"; // увеличено для удобства
-    inputField.style.whiteSpace = "nowrap";
-    inputField.style.overflow = "hidden";
-    inputField.style.textOverflow = "ellipsis";
-    inputField.addEventListener('dblclick', () => {
-      inputField.select();
-    });
-    linkContainer.appendChild(inputField);
+    showModal(shortUrl);
   } catch (error) {
     console.error('Ошибка при копировании URL:', error);
     alert('Ошибка при создании изображения. Проверьте настройки CORS или Mixed Content.');
@@ -197,31 +168,28 @@ async function copyURL() {
   }
 }
 
-/* Функция показа модального окна с data URL */
-function showModal(dataUrl) {
+/* Функция показа модального окна с ссылкой и превью */
+function showModal(link) {
   const modal = document.getElementById('modal-overlay');
   const modalLink = document.getElementById('modal-link');
   const modalImg = document.getElementById('modal-img');
-  modalLink.value = dataUrl;
-  modalImg.src = dataUrl;
+  modalLink.value = link;
+  modalImg.src = link;
   modal.style.display = 'flex';
 }
 
 /* Закрытие модального окна */
 document.getElementById('modal-close').addEventListener('click', () => {
-  const modal = document.getElementById('modal-overlay');
-  modal.style.display = 'none';
+  document.getElementById('modal-overlay').style.display = 'none';
 });
 
-/* Переключение темы через кнопку в шапке и компактную кнопку внизу */
+/* Переключение темы */
 document.getElementById('theme-toggle').addEventListener('click', () => {
   toggleTheme();
 });
-
 document.getElementById('theme-toggle-compact').addEventListener('click', () => {
   toggleTheme();
 });
-
 function toggleTheme() {
   const body = document.body;
   if (body.classList.contains('theme-dark')) {
