@@ -41,11 +41,11 @@ function randomizeAvatar() {
   }
 }
 
-function savePortrait() {
+async function sharePortrait() {
   const portrait = document.getElementById('portrait');
-  const saveButton = document.querySelectorAll('.btn-action')[1]; // Вторая кнопка — "Сохранить"
-  saveButton.textContent = 'Генерация изображения...';
-  saveButton.disabled = true;
+  const shareButton = document.querySelector('.btn-action[onclick="sharePortrait()"]');
+  shareButton.textContent = 'Генерация...';
+  shareButton.disabled = true;
 
   // Создаем временный контейнер 1000x1000
   const tempContainer = document.createElement('div');
@@ -56,7 +56,7 @@ function savePortrait() {
   tempContainer.style.backgroundColor = portrait.style.backgroundColor || '#000';
   tempContainer.style.overflow = 'hidden';
 
-  // Копируем слои (img) с размерами 1000x1000
+  // Клонируем слои (img) с размерами 1000x1000
   const images = portrait.querySelectorAll('img');
   images.forEach(img => {
     const clone = img.cloneNode(true);
@@ -70,39 +70,48 @@ function savePortrait() {
   });
   document.body.appendChild(tempContainer);
 
-  html2canvas(tempContainer, {
-    useCORS: true,
-    backgroundColor: portrait.style.backgroundColor || '#000',
-    width: 1000,
-    height: 1000,
-    scale: 1
-  }).then(canvas => {
+  try {
+    const canvas = await html2canvas(tempContainer, {
+      useCORS: true,
+      backgroundColor: portrait.style.backgroundColor || '#000',
+      width: 1000,
+      height: 1000,
+      scale: 1
+    });
     const dataUrl = canvas.toDataURL('image/png');
-    // Открываем новое окно с изображением
-    window.open(dataUrl, '_blank');
-    alert("Откройте новое окно и удерживайте изображение для сохранения.");
-    saveButton.textContent = 'Сохранить';
-    saveButton.disabled = false;
     document.body.removeChild(tempContainer);
-  }).catch(error => {
-    console.error('Ошибка сохранения:', error);
+    
+    // Если Web Share API поддерживает файлы, пробуем поделиться файлом
+    if (navigator.canShare && navigator.canShare({ files: [] })) {
+      // Преобразуем dataURL в File
+      const response = await fetch(dataUrl);
+      const blob = await response.blob();
+      const file = new File([blob], 'avatar.png', { type: 'image/png' });
+      
+      try {
+        await navigator.share({
+          title: 'Airicore Avatar Forge',
+          text: 'Смотри мой аватар!',
+          files: [file]
+        });
+      } catch (shareError) {
+        console.error('Ошибка при шаринге:', shareError);
+        alert('Ошибка при попытке поделиться.');
+      }
+    } else if (navigator.clipboard) {
+      // Если нет поддержки share, копируем data URL в буфер обмена
+      await navigator.clipboard.writeText(dataUrl);
+      alert('URL изображения скопирован в буфер обмена. Откройте его в браузере для сохранения.');
+    } else {
+      // Если ничего не сработало, открываем новое окно
+      window.open(dataUrl, '_blank');
+      alert('Откройте новое окно и сохраните изображение.');
+    }
+  } catch (error) {
+    console.error('Ошибка при генерации изображения для шаринга:', error);
     alert('Ошибка при создании изображения.');
-    saveButton.textContent = 'Сохранить';
-    saveButton.disabled = false;
-    document.body.removeChild(tempContainer);
-  });
-}
-
-// Переключение темы
-document.getElementById('theme-toggle').addEventListener('click', () => {
-  const body = document.body;
-  if (body.classList.contains('theme-dark')) {
-    body.classList.remove('theme-dark');
-    body.classList.add('theme-light');
-    document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
-  } else {
-    body.classList.remove('theme-light');
-    body.classList.add('theme-dark');
-    document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
+  } finally {
+    shareButton.textContent = 'Поделиться';
+    shareButton.disabled = false;
   }
-});
+}
