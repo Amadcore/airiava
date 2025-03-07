@@ -63,7 +63,7 @@ async function uploadToImgBB(dataUrl) {
   }
 }
 
-/* Сохраняем 1000x1000, скачиваем, показываем модальное окно с dataURL */
+/* Сохраняем 1000x1000, скачиваем, показываем модальное окно */
 async function savePortrait() {
   const saveButton = document.querySelectorAll('.btn-action')[1];
   saveButton.textContent = 'Генерация...';
@@ -98,6 +98,7 @@ async function savePortrait() {
       scale: 1
     });
     const dataUrl = canvas.toDataURL('image/png');
+
     // Инициируем скачивание
     const downloadLink = document.createElement('a');
     downloadLink.href = dataUrl;
@@ -110,7 +111,6 @@ async function savePortrait() {
     showModal(dataUrl);
   } catch (error) {
     console.error('Ошибка при создании изображения:', error);
-    // Убрали всплывающий alert
   } finally {
     saveButton.textContent = 'Сохранить';
     saveButton.disabled = false;
@@ -170,7 +170,6 @@ async function copyURL() {
     showModal(shortUrl);
   } catch (error) {
     console.error('Ошибка при создании изображения:', error);
-    // Убрали всплывающий alert
   } finally {
     copyButton.textContent = "Копировать URL";
     copyButton.disabled = false;
