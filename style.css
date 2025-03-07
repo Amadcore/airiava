@@ -10,12 +10,12 @@ body {
   transition: all 0.3s ease;
 }
 
-/* Тёмная и светлая темы */
+/* Тёмная тема */
 body.theme-dark {
   background: linear-gradient(to bottom, #3a3a3a, #1a1a1a);
   color: #ffffff;
 }
-
+/* Светлая тема */
 body.theme-light {
   background: linear-gradient(to bottom, #f7f7f7, #e0e0e0);
   color: #333333;
@@ -45,6 +45,7 @@ body.theme-light {
   padding: 1rem;
   margin: 0 auto;
 }
+/* Центрируем карточку и ограничиваем ширину */
 .card {
   background-color: rgba(255, 255, 255, 0.05);
   border-radius: 1rem;
@@ -53,6 +54,8 @@ body.theme-light {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
+  max-width: 900px; /* ограничиваем ширину на больших экранах */
+  margin: 0 auto;   /* центрируем */
 }
 
 /* Превью аватара */
@@ -254,5 +257,14 @@ body.theme-light {
   }
   .title {
     font-size: 1.6rem;
+  }
+}
+
+/* Медиа-запросы для больших экранов (min-width: 1024px) */
+@media (min-width: 1024px) {
+  /* .card уже max-width:900px и margin:0 auto */
+  /* Увеличим поле ссылки */
+  .link-container input {
+    max-width: 400px; /* Можно делать поле ещё шире на больших экранах */
   }
 }

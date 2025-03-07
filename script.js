@@ -41,7 +41,7 @@ function randomizeAvatar() {
   }
 }
 
-/* Функция сохранения: генерирует изображение 1000x1000, инициирует скачивание и открывает окно с dataURL */
+/* Функция сохранения: генерируем изображение 1000x1000, инициируем скачивание и открываем окно с dataURL */
 async function savePortrait() {
   const saveButton = document.querySelectorAll('.btn-action')[1];
   saveButton.textContent = 'Генерация...';
@@ -54,6 +54,7 @@ async function savePortrait() {
   tempContainer.style.height = '1000px';
   tempContainer.style.backgroundColor = portrait.style.backgroundColor || '#000';
   tempContainer.style.overflow = 'hidden';
+
   const images = portrait.querySelectorAll('img');
   images.forEach(img => {
     const clone = img.cloneNode(true);
@@ -66,6 +67,7 @@ async function savePortrait() {
     tempContainer.appendChild(clone);
   });
   document.body.appendChild(tempContainer);
+
   try {
     const canvas = await html2canvas(tempContainer, {
       backgroundColor: portrait.style.backgroundColor || '#000',
@@ -74,12 +76,16 @@ async function savePortrait() {
       scale: 1
     });
     const dataUrl = canvas.toDataURL('image/png');
+
+    // Инициируем скачивание
     const downloadLink = document.createElement('a');
     downloadLink.href = dataUrl;
     downloadLink.download = `avatar_${Date.now()}.png`;
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+
+    // Пытаемся открыть новое окно
     const newWindow = window.open();
     if (newWindow) {
       newWindow.document.write(`
@@ -103,7 +109,7 @@ async function savePortrait() {
   }
 }
 
-/* Функция копирования URL: генерирует dataURL, пытается автокопировать и выводит поле в #link-container */
+/* Функция копирования URL: генерируем dataURL, автокопирование + вывод поля в #link-container */
 async function copyURL() {
   const copyButton = document.querySelector('.btn-action[onclick="copyURL()"]');
   copyButton.textContent = 'Генерация...';
@@ -116,6 +122,7 @@ async function copyURL() {
   tempContainer.style.height = '1000px';
   tempContainer.style.backgroundColor = portrait.style.backgroundColor || '#000';
   tempContainer.style.overflow = 'hidden';
+
   const images = portrait.querySelectorAll('img');
   images.forEach(img => {
     const clone = img.cloneNode(true);
@@ -128,6 +135,7 @@ async function copyURL() {
     tempContainer.appendChild(clone);
   });
   document.body.appendChild(tempContainer);
+
   try {
     const canvas = await html2canvas(tempContainer, {
       backgroundColor: portrait.style.backgroundColor || '#000',
@@ -136,6 +144,8 @@ async function copyURL() {
       scale: 1
     });
     const dataUrl = canvas.toDataURL('image/png');
+
+    // Автокопирование
     if (navigator.clipboard && navigator.clipboard.writeText) {
       try {
         await navigator.clipboard.writeText(dataUrl);
@@ -144,6 +154,8 @@ async function copyURL() {
         alert("Автоматическое копирование не поддерживается. Скопируйте ссылку вручную.");
       }
     }
+
+    // Выводим поле в #link-container
     const linkContainer = document.getElementById('link-container');
     linkContainer.innerHTML = "";
     const inputField = document.createElement('input');
@@ -151,10 +163,11 @@ async function copyURL() {
     inputField.readOnly = true;
     inputField.value = dataUrl;
     inputField.title = dataUrl;
-    inputField.style.width = "150px";
+    // Поле 80% + max-width: 300px (управляется через CSS)
     inputField.style.whiteSpace = "nowrap";
     inputField.style.overflow = "hidden";
     inputField.style.textOverflow = "ellipsis";
+    // Двойной клик - выделяем
     inputField.addEventListener('dblclick', () => {
       inputField.select();
     });
@@ -169,47 +182,16 @@ async function copyURL() {
   }
 }
 
-/* Переключение темы */
-document.getElementById('theme-toggle').addEventListener('click', () => {
-  const body = document.body;
-  if (body.classList.contains('theme-dark')) {
-    body.classList.remove('theme-dark');
-    body.classList.add('theme-light');
-    // Обновляем обе кнопки темы, если они присутствуют
-    document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
-    const compact = document.getElementById('theme-toggle-compact');
-    if (compact) {
-      compact.innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
-    }
-  } else {
-    body.classList.remove('theme-light');
-    body.classList.add('theme-dark');
-    document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
-    const compact = document.getElementById('theme-toggle-compact');
-    if (compact) {
-      compact.innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
-    }
-  }
-});
-
-/* Переключение компактной кнопки темы (на нижней панели) */
+/* Переключение темы - компактная кнопка */
 document.getElementById('theme-toggle-compact').addEventListener('click', () => {
   const body = document.body;
   if (body.classList.contains('theme-dark')) {
     body.classList.remove('theme-dark');
     body.classList.add('theme-light');
     document.getElementById('theme-toggle-compact').innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
-    const mainToggle = document.getElementById('theme-toggle');
-    if (mainToggle) {
-      mainToggle.innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
-    }
   } else {
     body.classList.remove('theme-light');
     body.classList.add('theme-dark');
     document.getElementById('theme-toggle-compact').innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
-    const mainToggle = document.getElementById('theme-toggle');
-    if (mainToggle) {
-      mainToggle.innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
-    }
   }
 });
