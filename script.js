@@ -8,7 +8,7 @@ const parts = {
 
 function updatePart(part) {
   const img = document.getElementById(part);
-  // Если возникают CORS-ошибки, попробуйте убрать crossOrigin или добавить параметр ?timestamp для кэширования
+  // Если возникают CORS-ошибки, попробуйте добавить параметр ?timestamp для кэширования
   img.src = `assets/${part}/${part}${parts[part].current}.png`;
   img.alt = `${part} ${parts[part].current}`;
   img.classList.add('animate-fade-in');
@@ -42,7 +42,7 @@ function randomizeAvatar() {
   }
 }
 
-/* Функция сохранения: генерирует изображение, инициирует скачивание и открывает новое окно с ссылкой */
+/* Функция сохранения: генерирует изображение 1000x1000, инициирует скачивание и открывает новую страницу с ссылкой */
 async function savePortrait() {
   const saveButton = document.querySelectorAll('.btn-action')[1];
   saveButton.textContent = 'Генерация...';
@@ -59,7 +59,7 @@ async function savePortrait() {
   tempContainer.style.backgroundColor = portrait.style.backgroundColor || '#000';
   tempContainer.style.overflow = 'hidden';
 
-  // Клонируем все слои (img) с фиксированными размерами
+  // Клонируем все слои (img) с фиксированными размерами 1000x1000
   const images = portrait.querySelectorAll('img');
   images.forEach(img => {
     const clone = img.cloneNode(true);
@@ -75,7 +75,6 @@ async function savePortrait() {
 
   try {
     const canvas = await html2canvas(tempContainer, {
-      // Если возникают проблемы с CORS, можно попробовать отключить useCORS
       backgroundColor: portrait.style.backgroundColor || '#000',
       width: 1000,
       height: 1000,
@@ -91,7 +90,7 @@ async function savePortrait() {
     downloadLink.click();
     document.body.removeChild(downloadLink);
 
-    // Пытаемся открыть новое окно с HTML-страницей для копирования URL
+    // Открываем новое окно с HTML-страницей, содержащей ссылку на изображение
     const newWindow = window.open();
     if (newWindow) {
       newWindow.document.write(`
@@ -111,6 +110,62 @@ async function savePortrait() {
   } finally {
     saveButton.textContent = 'Сохранить';
     saveButton.disabled = false;
+    document.body.removeChild(tempContainer);
+  }
+}
+
+/* Функция копирования URL: генерирует data URL и пытается скопировать его в буфер обмена */
+async function copyURL() {
+  const copyButton = document.querySelector('.btn-action[onclick="copyURL()"]');
+  copyButton.textContent = 'Генерация...';
+  copyButton.disabled = true;
+
+  const portrait = document.getElementById('portrait');
+
+  // Создаем временный контейнер 1000x1000 пикселей
+  const tempContainer = document.createElement('div');
+  tempContainer.style.position = 'absolute';
+  tempContainer.style.left = '-9999px';
+  tempContainer.style.width = '1000px';
+  tempContainer.style.height = '1000px';
+  tempContainer.style.backgroundColor = portrait.style.backgroundColor || '#000';
+  tempContainer.style.overflow = 'hidden';
+
+  const images = portrait.querySelectorAll('img');
+  images.forEach(img => {
+    const clone = img.cloneNode(true);
+    clone.style.position = 'absolute';
+    clone.style.width = '1000px';
+    clone.style.height = '1000px';
+    clone.style.top = '0';
+    clone.style.left = '0';
+    clone.style.objectFit = 'cover';
+    tempContainer.appendChild(clone);
+  });
+  document.body.appendChild(tempContainer);
+
+  try {
+    const canvas = await html2canvas(tempContainer, {
+      backgroundColor: portrait.style.backgroundColor || '#000',
+      width: 1000,
+      height: 1000,
+      scale: 1
+    });
+    const dataUrl = canvas.toDataURL('image/png');
+
+    // Пытаемся скопировать dataUrl в буфер обмена
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(dataUrl);
+      alert("Ссылка на изображение скопирована в буфер обмена!");
+    } else {
+      alert("Автоматическое копирование не поддерживается. Скопируйте эту ссылку вручную:\n" + dataUrl);
+    }
+  } catch (error) {
+    console.error('Ошибка при копировании URL:', error);
+    alert('Ошибка при создании изображения. Проверьте настройки CORS или Mixed Content.');
+  } finally {
+    copyButton.textContent = 'Копировать URL';
+    copyButton.disabled = false;
     document.body.removeChild(tempContainer);
   }
 }
