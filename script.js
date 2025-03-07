@@ -8,8 +8,7 @@ const parts = {
 
 function updatePart(part) {
   const img = document.getElementById(part);
-  // Если возникают CORS-ошибки, уберите crossOrigin="anonymous" и useCORS:true
-  // img.src = `assets/${part}/${part}${parts[part].current}.png?${Date.now()}`; // Можно добавить ? для кэширования
+  // Если CORS-ошибки, уберите crossOrigin и useCORS
   img.src = `assets/${part}/${part}${parts[part].current}.png`;
   img.alt = `${part} ${parts[part].current}`;
   img.classList.add('animate-fade-in');
@@ -43,7 +42,7 @@ function randomizeAvatar() {
   }
 }
 
-/* Генерируем 1000x1000 картинку и открываем её в новом окне */
+/* Вместо открытия в новом окне: ПОЛНОСТЬЮ ЗАМЕНЯЕМ СТРАНИЦУ на <img> + инструкцию */
 async function savePortrait() {
   const saveButton = document.querySelectorAll('.btn-action')[1];
   saveButton.textContent = 'Генерация...';
@@ -51,7 +50,7 @@ async function savePortrait() {
 
   const portrait = document.getElementById('portrait');
 
-  // Временный контейнер
+  // Создаем временный контейнер 1000x1000
   const tempContainer = document.createElement('div');
   tempContainer.style.position = 'absolute';
   tempContainer.style.left = '-9999px';
@@ -72,26 +71,30 @@ async function savePortrait() {
     clone.style.objectFit = 'cover';
     tempContainer.appendChild(clone);
   });
-
   document.body.appendChild(tempContainer);
 
   try {
     const canvas = await html2canvas(tempContainer, {
-      // useCORS: true, // Если возникают проблемы, попробуйте отключить
+      // useCORS: true, // убирайте, если мешает
       backgroundColor: portrait.style.backgroundColor || '#000',
       width: 1000,
       height: 1000,
       scale: 1
     });
     const dataUrl = canvas.toDataURL('image/png');
-    window.open(dataUrl, '_blank');
-    alert("Откройте новое окно и сохраните изображение через стандартное меню.");
+
+    // Теперь ПОЛНОСТЬЮ меняем страницу
+    document.body.innerHTML = `
+      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:1rem;">
+        <h2 style="margin-bottom:1rem;">Нажмите и удерживайте изображение, чтобы сохранить</h2>
+        <img src="${dataUrl}" style="max-width:90%; height:auto; border:2px solid #ccc; border-radius:1rem;">
+      </div>
+    `;
+    // На iOS/Android внутри Telegram пользователь может удерживать картинку, чтобы сохранить
   } catch (error) {
     console.error('Ошибка сохранения:', error);
-    alert('Ошибка при создании изображения. Проверьте CORS / Mixed Content.');
+    alert('Ошибка при создании изображения (CORS?).');
   } finally {
-    saveButton.textContent = 'Сохранить';
-    saveButton.disabled = false;
     document.body.removeChild(tempContainer);
   }
 }
