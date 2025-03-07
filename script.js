@@ -106,12 +106,11 @@ async function savePortrait() {
     downloadLink.click();
     document.body.removeChild(downloadLink);
 
-    // Показываем модальное окно (без вывода ошибки)
+    // Показываем модальное окно (без alert)
     showModal(dataUrl);
   } catch (error) {
     console.error('Ошибка при создании изображения:', error);
-    // Убираем alert
-    // alert('Ошибка при создании изображения. Проверьте настройки CORS или Mixed Content.');
+    // Убрали всплывающий alert
   } finally {
     saveButton.textContent = 'Сохранить';
     saveButton.disabled = false;
@@ -119,7 +118,7 @@ async function savePortrait() {
   }
 }
 
-/* Копируем URL: генерируем dataURL, пытаемся загрузить на imgBB, показываем модальное окно */
+/* Копируем URL: генерируем dataURL, загружаем на imgBB, показываем модальное окно */
 async function copyURL() {
   const copyButton = document.querySelectorAll('.btn-action')[2];
   copyButton.textContent = 'Генерация...';
@@ -157,7 +156,6 @@ async function copyURL() {
     });
     const dataUrl = canvas.toDataURL('image/png');
 
-    // Пытаемся получить короткую ссылку
     let shortUrl;
     try {
       shortUrl = await uploadToImgBB(dataUrl);
@@ -169,13 +167,10 @@ async function copyURL() {
       console.warn("Не удалось загрузить на imgBB:", uploadError);
       shortUrl = dataUrl; // fallback: длинная ссылка
     }
-
-    // Показываем модальное окно (без вывода ошибки)
     showModal(shortUrl);
   } catch (error) {
     console.error('Ошибка при создании изображения:', error);
-    // Убираем alert
-    // alert('Ошибка при создании изображения. Проверьте настройки CORS или Mixed Content.');
+    // Убрали всплывающий alert
   } finally {
     copyButton.textContent = "Копировать URL";
     copyButton.disabled = false;
@@ -207,25 +202,3 @@ document.getElementById('modal-copy').addEventListener('click', () => {
     alert('Скопируйте ссылку вручную');
   }
 });
-
-/* Переключение темы */
-document.getElementById('theme-toggle').addEventListener('click', () => {
-  toggleTheme();
-});
-document.getElementById('theme-toggle-compact').addEventListener('click', () => {
-  toggleTheme();
-});
-
-function toggleTheme() {
-  const body = document.body;
-  const themeCompactBtn = document.getElementById('theme-toggle-compact');
-  if (body.classList.contains('theme-dark')) {
-    body.classList.remove('theme-dark');
-    body.classList.add('theme-light');
-    themeCompactBtn.innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
-  } else {
-    body.classList.remove('theme-light');
-    body.classList.add('theme-dark');
-    themeCompactBtn.innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
-  }
-}

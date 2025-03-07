@@ -10,13 +10,10 @@ body {
   transition: all 0.3s ease;
 }
 
+/* Тёмная тема (без переключения) */
 body.theme-dark {
   background: linear-gradient(to bottom, #3a3a3a, #1a1a1a);
   color: #ffffff;
-}
-body.theme-light {
-  background: linear-gradient(to bottom, #f7f7f7, #e0e0e0);
-  color: #333333;
 }
 
 /* Компактная шапка */
@@ -51,8 +48,8 @@ body.theme-light {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
-  max-width: 900px; /* ограничиваем ширину */
-  margin: 0 auto;   /* центрируем */
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 /* Превью аватара */
@@ -213,26 +210,6 @@ body.theme-light {
   background: linear-gradient(90deg, #3a4ac4, #7a4de2);
 }
 
-/* Кнопка темы внизу */
-.theme-container {
-  display: flex;
-  justify-content: center;
-  margin: 1rem 0;
-}
-.theme-toggle-compact {
-  padding: 0.4rem 0.8rem;
-  background-color: #4b5bd7;
-  color: #fff;
-  border: none;
-  border-radius: 0.4rem;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-.theme-toggle-compact:hover {
-  background-color: #3a4ac4;
-}
-
 /* Футер */
 .footer {
   margin-top: 1rem;
@@ -268,7 +245,7 @@ body.theme-light {
   animation: fadeIn 0.5s ease-in;
 }
 
-/* Узкие экраны */
+/* Узкие экраны (max-width: 600px) */
 @media (max-width: 600px) {
   .card {
     grid-template-columns: 1fr;
@@ -290,7 +267,7 @@ body.theme-light {
   }
 }
 
-/* Широкие экраны */
+/* Широкие экраны (min-width: 1024px) */
 @media (min-width: 1024px) {
   .card {
     max-width: 900px;
