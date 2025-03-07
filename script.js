@@ -8,7 +8,6 @@ const parts = {
 
 function updatePart(part) {
   const img = document.getElementById(part);
-  // Если возникают CORS-ошибки, попробуйте добавить параметр ?timestamp
   img.src = `assets/${part}/${part}${parts[part].current}.png`;
   img.alt = `${part} ${parts[part].current}`;
   img.classList.add('animate-fade-in');
@@ -42,12 +41,11 @@ function randomizeAvatar() {
   }
 }
 
-/* Сохранение: генерируем 1000x1000, пытаемся скачать и открыть новую страницу с dataURL */
+/* Функция сохранения: генерирует изображение 1000x1000, инициирует скачивание и открывает новое окно с dataURL */
 async function savePortrait() {
   const saveButton = document.querySelectorAll('.btn-action')[1];
   saveButton.textContent = 'Генерация...';
   saveButton.disabled = true;
-
   const portrait = document.getElementById('portrait');
   const tempContainer = document.createElement('div');
   tempContainer.style.position = 'absolute';
@@ -56,7 +54,6 @@ async function savePortrait() {
   tempContainer.style.height = '1000px';
   tempContainer.style.backgroundColor = portrait.style.backgroundColor || '#000';
   tempContainer.style.overflow = 'hidden';
-
   const images = portrait.querySelectorAll('img');
   images.forEach(img => {
     const clone = img.cloneNode(true);
@@ -69,7 +66,6 @@ async function savePortrait() {
     tempContainer.appendChild(clone);
   });
   document.body.appendChild(tempContainer);
-
   try {
     const canvas = await html2canvas(tempContainer, {
       backgroundColor: portrait.style.backgroundColor || '#000',
@@ -78,16 +74,12 @@ async function savePortrait() {
       scale: 1
     });
     const dataUrl = canvas.toDataURL('image/png');
-
-    // Пытаемся скачать
     const downloadLink = document.createElement('a');
     downloadLink.href = dataUrl;
     downloadLink.download = `avatar_${Date.now()}.png`;
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
-
-    // Пытаемся открыть новое окно с HTML-страницей
     const newWindow = window.open();
     if (newWindow) {
       newWindow.document.write(`
@@ -111,12 +103,11 @@ async function savePortrait() {
   }
 }
 
-/* Копировать URL: генерируем dataURL, пытаемся автокопировать и выводим в link-container */
+/* Функция копирования URL: генерирует dataURL, пытается автокопировать и выводит поле в #link-container */
 async function copyURL() {
   const copyButton = document.querySelector('.btn-action[onclick="copyURL()"]');
   copyButton.textContent = 'Генерация...';
   copyButton.disabled = true;
-
   const portrait = document.getElementById('portrait');
   const tempContainer = document.createElement('div');
   tempContainer.style.position = 'absolute';
@@ -125,7 +116,6 @@ async function copyURL() {
   tempContainer.style.height = '1000px';
   tempContainer.style.backgroundColor = portrait.style.backgroundColor || '#000';
   tempContainer.style.overflow = 'hidden';
-
   const images = portrait.querySelectorAll('img');
   images.forEach(img => {
     const clone = img.cloneNode(true);
@@ -138,7 +128,6 @@ async function copyURL() {
     tempContainer.appendChild(clone);
   });
   document.body.appendChild(tempContainer);
-
   try {
     const canvas = await html2canvas(tempContainer, {
       backgroundColor: portrait.style.backgroundColor || '#000',
@@ -147,37 +136,28 @@ async function copyURL() {
       scale: 1
     });
     const dataUrl = canvas.toDataURL('image/png');
-
-    // Автокопирование (если доступно)
     if (navigator.clipboard && navigator.clipboard.writeText) {
       try {
         await navigator.clipboard.writeText(dataUrl);
         alert("Ссылка на изображение скопирована в буфер обмена!");
       } catch (err) {
-        console.warn("Автоматическое копирование не сработало:", err);
+        alert("Автоматическое копирование не поддерживается. Скопируйте ссылку вручную.");
       }
     }
-
-    // Выводим поле в .link-container
     const linkContainer = document.getElementById('link-container');
-    linkContainer.innerHTML = ''; // очищаем старое
-
-    // Создаем input (маленький, 100px)
+    linkContainer.innerHTML = '';
     const inputField = document.createElement('input');
     inputField.type = 'text';
     inputField.readOnly = true;
     inputField.value = dataUrl;
-    inputField.title = dataUrl; // полный URL по hover
-    // Усечение текста
-    inputField.style.width = '100px';
+    inputField.title = dataUrl;
+    inputField.style.width = '150px';
     inputField.style.whiteSpace = 'nowrap';
     inputField.style.overflow = 'hidden';
     inputField.style.textOverflow = 'ellipsis';
-    // Двойной клик - выделяем
     inputField.addEventListener('dblclick', () => {
       inputField.select();
     });
-
     linkContainer.appendChild(inputField);
   } catch (error) {
     console.error('Ошибка при копировании URL:', error);

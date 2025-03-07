@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Airicore Ava</title>
+  <title>Airicore Avatar Forge</title>
   <!-- Шрифты: Days One для заголовков, Roboto для остального текста -->
   <link href="https://fonts.googleapis.com/css2?family=Days+One&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   <!-- Font Awesome для иконок -->
@@ -16,12 +16,10 @@
   <script src="script.js" defer></script>
 </head>
 <body class="theme-dark">
+  <!-- Компактная шапка -->
   <header class="header">
-    <h1 class="title">Airicore Ava</h1>
+    <h1 class="title">Airicore Avatar Forge</h1>
     <p class="subtitle">Создай уникальный аватар для студии</p>
-    <button id="theme-toggle" class="theme-toggle">
-      <i class="fas fa-sun"></i> Светлая тема
-    </button>
   </header>
 
   <main class="container">
@@ -40,90 +38,62 @@
       <!-- Элементы управления -->
       <div class="controls">
         <div class="controls-grid">
-          <!-- Лицо -->
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('face')">
-                <i class="fas fa-arrow-left"></i>
-              </button>
-              <button class="btn-control" onclick="nextPart('face')">
-                <i class="fas fa-arrow-right"></i>
-              </button>
+              <button class="btn-control" onclick="prevPart('face')"><i class="fas fa-arrow-left"></i></button>
+              <button class="btn-control" onclick="nextPart('face')"><i class="fas fa-arrow-right"></i></button>
             </div>
             <span class="control-label">Лицо</span>
           </div>
-          <!-- Глаза -->
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('eyes')">
-                <i class="fas fa-arrow-left"></i>
-              </button>
-              <button class="btn-control" onclick="nextPart('eyes')">
-                <i class="fas fa-arrow-right"></i>
-              </button>
+              <button class="btn-control" onclick="prevPart('eyes')"><i class="fas fa-arrow-left"></i></button>
+              <button class="btn-control" onclick="nextPart('eyes')"><i class="fas fa-arrow-right"></i></button>
             </div>
             <span class="control-label">Глаза</span>
           </div>
-          <!-- Волосы -->
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('hair')">
-                <i class="fas fa-arrow-left"></i>
-              </button>
-              <button class="btn-control" onclick="nextPart('hair')">
-                <i class="fas fa-arrow-right"></i>
-              </button>
+              <button class="btn-control" onclick="prevPart('hair')"><i class="fas fa-arrow-left"></i></button>
+              <button class="btn-control" onclick="nextPart('hair')"><i class="fas fa-arrow-right"></i></button>
             </div>
             <span class="control-label">Волосы</span>
           </div>
-          <!-- Рот -->
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('mouth')">
-                <i class="fas fa-arrow-left"></i>
-              </button>
-              <button class="btn-control" onclick="nextPart('mouth')">
-                <i class="fas fa-arrow-right"></i>
-              </button>
+              <button class="btn-control" onclick="prevPart('mouth')"><i class="fas fa-arrow-left"></i></button>
+              <button class="btn-control" onclick="nextPart('mouth')"><i class="fas fa-arrow-right"></i></button>
             </div>
             <span class="control-label">Рот</span>
           </div>
-          <!-- Одежда -->
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('body')">
-                <i class="fas fa-arrow-left"></i>
-              </button>
-              <button class="btn-control" onclick="nextPart('body')">
-                <i class="fas fa-arrow-right"></i>
-              </button>
+              <button class="btn-control" onclick="prevPart('body')"><i class="fas fa-arrow-left"></i></button>
+              <button class="btn-control" onclick="nextPart('body')"><i class="fas fa-arrow-right"></i></button>
             </div>
             <span class="control-label">Одежда</span>
           </div>
-          <!-- Фон -->
           <div class="control-item">
             <label class="control-label">Фон</label>
             <input type="color" class="color-picker" onchange="changeBgColor(this.value)">
           </div>
         </div>
 
-        <!-- Кнопки действий + поле для ссылки -->
+        <!-- Кнопки действий и поле для ссылки -->
         <div class="action-buttons">
-          <button class="btn-action" onclick="randomizeAvatar()">
-            <i class="fas fa-dice"></i> Случайный
-          </button>
-          <button class="btn-action" onclick="savePortrait()">
-            <i class="fas fa-save"></i> Сохранить
-          </button>
-          <button class="btn-action" onclick="copyURL()">
-            <i class="fas fa-copy"></i> Копировать URL
-          </button>
-          <!-- Контейнер для ссылки -->
+          <button class="btn-action" onclick="randomizeAvatar()"><i class="fas fa-dice"></i> Случайный</button>
+          <button class="btn-action" onclick="savePortrait()"><i class="fas fa-save"></i> Сохранить</button>
+          <button class="btn-action" onclick="copyURL()"><i class="fas fa-copy"></i> Копировать URL</button>
           <div id="link-container" class="link-container"></div>
         </div>
       </div>
     </div>
   </main>
+
+  <!-- Кнопка темы внизу, над футером -->
+  <div class="theme-container">
+    <button id="theme-toggle" class="theme-toggle-compact"><i class="fas fa-sun"></i> Светлая тема</button>
+  </div>
 
   <footer class="footer">
     <p>© 2025 Airicore Avatar Forge. Художник <strong>Hellbrush</strong></p>

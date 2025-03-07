@@ -10,45 +10,31 @@ body {
   transition: all 0.3s ease;
 }
 
-/* Тёмная тема */
 body.theme-dark {
   background: linear-gradient(to bottom, #3a3a3a, #1a1a1a);
   color: #ffffff;
 }
-/* Светлая тема */
+
 body.theme-light {
   background: linear-gradient(to bottom, #f7f7f7, #e0e0e0);
   color: #333333;
 }
 
-/* Шапка */
+/* Компактная шапка */
 .header {
   text-align: center;
-  padding: 1.5rem 1rem;
+  padding: 0.8rem 1rem;
 }
 .title {
   font-family: 'Days One', sans-serif;
-  font-size: 2.5rem;
+  font-size: 2rem;
   color: inherit;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
 }
 .subtitle {
-  margin-top: 0.5rem;
-  font-size: 1rem;
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
   opacity: 0.85;
-}
-.theme-toggle {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: #4b5bd7;
-  color: #fff;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-.theme-toggle:hover {
-  background-color: #3a4ac4;
 }
 
 /* Контейнер и карточка */
@@ -62,10 +48,10 @@ body.theme-light {
   background-color: rgba(255, 255, 255, 0.05);
   border-radius: 1rem;
   box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-  padding: 2rem;
+  padding: 1.5rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 /* Превью аватара */
@@ -99,13 +85,12 @@ body.theme-light {
 .controls {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 .controls-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 1rem;
+  gap: 0.8rem;
 }
 .control-item {
   display: flex;
@@ -130,8 +115,8 @@ body.theme-light {
   background-color: #3a4ac4;
 }
 .control-label {
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
 }
 
 /* Цветовой селектор */
@@ -143,19 +128,20 @@ body.theme-light {
   cursor: pointer;
 }
 
-/* Кнопки действий + контейнер для ссылки */
+/* Кнопки действий и поле для ссылки */
 .action-buttons {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 1rem;
+  gap: 0.8rem;
 }
 .btn-action {
-  padding: 0.75rem 1.25rem;
+  padding: 0.6rem 1rem;
   background: linear-gradient(90deg, #4b5bd7, #8b5cf6);
   border: none;
   border-radius: 0.5rem;
   color: #fff;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.3s, box-shadow 0.3s;
@@ -166,13 +152,14 @@ body.theme-light {
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 
-/* Поле для ссылки */
+/* Контейнер для поля ссылки */
 .link-container {
+  margin-top: 0.5rem;
   display: flex;
-  align-items: center;
+  justify-content: center;
 }
 .link-container input {
-  width: 100px;
+  width: 150px;
   padding: 4px;
   font-size: 0.85rem;
   border: 1px solid #ccc;
@@ -187,15 +174,35 @@ body.theme-light {
   outline: 2px solid #4b5bd7;
 }
 
+/* Кнопка темы в нижней части */
+.theme-container {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
+}
+.theme-toggle-compact {
+  padding: 0.4rem 0.8rem;
+  background-color: #4b5bd7;
+  color: #fff;
+  border: none;
+  border-radius: 0.4rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.theme-toggle-compact:hover {
+  background-color: #3a4ac4;
+}
+
 /* Футер */
 .footer {
-  margin-top: 3rem;
-  padding: 1.5rem 1rem;
+  margin-top: 1.5rem;
+  padding: 1rem;
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 .footer p {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 .footer strong {
   color: #ffdf5f;
@@ -203,7 +210,7 @@ body.theme-light {
 .social-links {
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  gap: 0.8rem;
 }
 .social-links a {
   color: inherit;
@@ -222,7 +229,7 @@ body.theme-light {
   animation: fadeIn 0.5s ease-in;
 }
 
-/* Медиа-запросы для мобильных - более строгие (max-width:600px) */
+/* Медиа-запросы для узких экранов (max-width: 600px) */
 @media (max-width: 600px) {
   .card {
     grid-template-columns: 1fr;
@@ -232,23 +239,17 @@ body.theme-light {
     width: 250px;
     height: 250px;
   }
-  /* Делаем кнопки вертикальными */
-  .action-buttons {
-    flex-direction: column;
-    align-items: stretch; /* кнопки тянутся на всю ширину */
-    gap: 0.5rem;
+  .controls-grid {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
   }
   .btn-action {
     width: 100%;
     text-align: center;
   }
-  /* Ссылка тоже на всю ширину */
-  .link-container {
-    width: 100%;
-    justify-content: center; /* по центру */
-  }
   .link-container input {
-    width: 90%; /* почти всю ширину экрана */
-    margin: 0 auto;
+    width: 90%;
+  }
+  .title {
+    font-size: 1.8rem;
   }
 }
