@@ -8,7 +8,7 @@ const parts = {
 
 function updatePart(part) {
   const img = document.getElementById(part);
-  // Если возникают CORS-ошибки, попробуйте добавить параметр ?timestamp для кэширования
+  // Если возникают CORS-ошибки, попробуйте добавить параметр ?timestamp для обновления кэша
   img.src = `assets/${part}/${part}${parts[part].current}.png`;
   img.alt = `${part} ${parts[part].current}`;
   img.classList.add('animate-fade-in');
@@ -42,7 +42,8 @@ function randomizeAvatar() {
   }
 }
 
-/* Функция сохранения: генерирует изображение 1000x1000, инициирует скачивание и открывает новую страницу с ссылкой */
+/* Функция сохранения: генерирует изображение 1000x1000, пытается инициировать скачивание,
+   а также открывает новое окно с HTML-страницей, содержащей data URL итогового изображения */
 async function savePortrait() {
   const saveButton = document.querySelectorAll('.btn-action')[1];
   saveButton.textContent = 'Генерация...';
@@ -90,7 +91,7 @@ async function savePortrait() {
     downloadLink.click();
     document.body.removeChild(downloadLink);
 
-    // Открываем новое окно с HTML-страницей, содержащей ссылку на изображение
+    // Пытаемся открыть новое окно с HTML-страницей, содержащей data URL
     const newWindow = window.open();
     if (newWindow) {
       newWindow.document.write(`
@@ -114,7 +115,7 @@ async function savePortrait() {
   }
 }
 
-/* Функция копирования URL: генерирует data URL и пытается скопировать его в буфер обмена */
+/* Функция копирования URL: генерирует data URL, создаёт временное текстовое поле для выделения и копирования в буфер */
 async function copyURL() {
   const copyButton = document.querySelector('.btn-action[onclick="copyURL()"]');
   copyButton.textContent = 'Генерация...';
@@ -122,7 +123,7 @@ async function copyURL() {
 
   const portrait = document.getElementById('portrait');
 
-  // Создаем временный контейнер 1000x1000 пикселей
+  // Создаем временный контейнер размером 1000x1000 пикселей
   const tempContainer = document.createElement('div');
   tempContainer.style.position = 'absolute';
   tempContainer.style.left = '-9999px';
@@ -153,13 +154,20 @@ async function copyURL() {
     });
     const dataUrl = canvas.toDataURL('image/png');
 
-    // Пытаемся скопировать dataUrl в буфер обмена
-    if (navigator.clipboard && navigator.clipboard.writeText) {
+    // Создаем временное текстовое поле для копирования
+    const tempInput = document.createElement('input');
+    tempInput.value = dataUrl;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    tempInput.setSelectionRange(0, 99999); // для мобильных устройств
+
+    try {
       await navigator.clipboard.writeText(dataUrl);
       alert("Ссылка на изображение скопирована в буфер обмена!");
-    } else {
-      alert("Автоматическое копирование не поддерживается. Скопируйте эту ссылку вручную:\n" + dataUrl);
+    } catch (err) {
+      alert("Автоматическое копирование не поддерживается. Скопируйте ссылку вручную из выделенного поля.");
     }
+    document.body.removeChild(tempInput);
   } catch (error) {
     console.error('Ошибка при копировании URL:', error);
     alert('Ошибка при создании изображения. Проверьте настройки CORS или Mixed Content.');
