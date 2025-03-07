@@ -14,7 +14,6 @@ body.theme-dark {
   background: linear-gradient(to bottom, #3a3a3a, #1a1a1a);
   color: #ffffff;
 }
-
 body.theme-light {
   background: linear-gradient(to bottom, #f7f7f7, #e0e0e0);
   color: #333333;
@@ -52,8 +51,8 @@ body.theme-light {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
-  max-width: 900px;
-  margin: 0 auto;
+  max-width: 900px; /* ограничиваем ширину */
+  margin: 0 auto;   /* центрируем */
 }
 
 /* Превью аватара */
@@ -130,7 +129,7 @@ body.theme-light {
   cursor: pointer;
 }
 
-/* Кнопки действий и поле для ссылки */
+/* Кнопки действий */
 .action-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -154,29 +153,7 @@ body.theme-light {
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 
-/* Контейнер для поля ссылки */
-.link-container {
-  margin-left: 1rem;
-  display: flex;
-  align-items: center;
-}
-.link-container input {
-  width: 150px;
-  padding: 4px;
-  font-size: 0.85rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  background-color: #f5f5f5;
-  color: #333;
-}
-.link-container input:focus {
-  outline: 2px solid #4b5bd7;
-}
-
-/* Модальное окно для копирования ссылки */
+/* Модальное окно (overlay) */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -236,7 +213,7 @@ body.theme-light {
   background: linear-gradient(90deg, #3a4ac4, #7a4de2);
 }
 
-/* Кнопка темы в нижней части */
+/* Кнопка темы внизу */
 .theme-container {
   display: flex;
   justify-content: center;
@@ -291,7 +268,7 @@ body.theme-light {
   animation: fadeIn 0.5s ease-in;
 }
 
-/* Медиа-запросы для узких экранов (max-width: 600px) */
+/* Узкие экраны */
 @media (max-width: 600px) {
   .card {
     grid-template-columns: 1fr;
@@ -308,21 +285,15 @@ body.theme-light {
     width: 100%;
     text-align: center;
   }
-  .link-container input {
-    width: 90%;
-  }
   .title {
     font-size: 1.6rem;
   }
 }
 
-/* Медиа-запросы для больших экранов (min-width: 1024px) */
+/* Широкие экраны */
 @media (min-width: 1024px) {
   .card {
     max-width: 900px;
     margin: 0 auto;
-  }
-  .link-container input {
-    max-width: 400px;
   }
 }

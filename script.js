@@ -46,7 +46,7 @@ async function uploadToImgBB(dataUrl) {
   const base64 = dataUrl.replace(/^data:image\/\w+;base64,/, "");
   const formData = new URLSearchParams();
   formData.append("image", base64);
-  const apiKey = "efe2ee7dac2ce58757259bce5532966b";
+  const apiKey = "efe2ee7dac2ce58757259bce5532966b"; // Ваш API-ключ
   const endpoint = `https://api.imgbb.com/1/upload?key=${apiKey}`;
   const response = await fetch(endpoint, {
     method: "POST",
@@ -63,7 +63,7 @@ async function uploadToImgBB(dataUrl) {
   }
 }
 
-/* Функция сохранения: генерирует изображение 1000x1000, инициирует скачивание и открывает модальное окно с dataURL */
+/* Сохраняем 1000x1000, скачиваем, показываем модальное окно с dataURL */
 async function savePortrait() {
   const saveButton = document.querySelectorAll('.btn-action')[1];
   saveButton.textContent = 'Генерация...';
@@ -76,6 +76,7 @@ async function savePortrait() {
   tempContainer.style.height = '1000px';
   tempContainer.style.backgroundColor = portrait.style.backgroundColor || '#000';
   tempContainer.style.overflow = 'hidden';
+
   const images = portrait.querySelectorAll('img');
   images.forEach(img => {
     const clone = img.cloneNode(true);
@@ -87,6 +88,7 @@ async function savePortrait() {
     clone.style.objectFit = 'cover';
     tempContainer.appendChild(clone);
   });
+
   document.body.appendChild(tempContainer);
   try {
     const canvas = await html2canvas(tempContainer, {
@@ -96,16 +98,20 @@ async function savePortrait() {
       scale: 1
     });
     const dataUrl = canvas.toDataURL('image/png');
+    // Инициируем скачивание
     const downloadLink = document.createElement('a');
     downloadLink.href = dataUrl;
     downloadLink.download = `avatar_${Date.now()}.png`;
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+
+    // Показываем модальное окно (без вывода ошибки)
     showModal(dataUrl);
   } catch (error) {
-    console.error('Ошибка при сохранении изображения:', error);
-    alert('Ошибка при создании изображения. Проверьте настройки CORS или Mixed Content.');
+    console.error('Ошибка при создании изображения:', error);
+    // Убираем alert
+    // alert('Ошибка при создании изображения. Проверьте настройки CORS или Mixed Content.');
   } finally {
     saveButton.textContent = 'Сохранить';
     saveButton.disabled = false;
@@ -113,11 +119,12 @@ async function savePortrait() {
   }
 }
 
-/* Функция копирования URL: генерирует dataURL, загружает на imgBB для короткой ссылки и открывает модальное окно */
+/* Копируем URL: генерируем dataURL, пытаемся загрузить на imgBB, показываем модальное окно */
 async function copyURL() {
-  const copyButton = document.querySelector('.btn-action[onclick="copyURL()"]');
+  const copyButton = document.querySelectorAll('.btn-action')[2];
   copyButton.textContent = 'Генерация...';
   copyButton.disabled = true;
+
   const portrait = document.getElementById('portrait');
   const tempContainer = document.createElement('div');
   tempContainer.style.position = 'absolute';
@@ -126,6 +133,7 @@ async function copyURL() {
   tempContainer.style.height = '1000px';
   tempContainer.style.backgroundColor = portrait.style.backgroundColor || '#000';
   tempContainer.style.overflow = 'hidden';
+
   const images = portrait.querySelectorAll('img');
   images.forEach(img => {
     const clone = img.cloneNode(true);
@@ -137,7 +145,9 @@ async function copyURL() {
     clone.style.objectFit = 'cover';
     tempContainer.appendChild(clone);
   });
+
   document.body.appendChild(tempContainer);
+
   try {
     const canvas = await html2canvas(tempContainer, {
       backgroundColor: portrait.style.backgroundColor || '#000',
@@ -146,6 +156,8 @@ async function copyURL() {
       scale: 1
     });
     const dataUrl = canvas.toDataURL('image/png');
+
+    // Пытаемся получить короткую ссылку
     let shortUrl;
     try {
       shortUrl = await uploadToImgBB(dataUrl);
@@ -154,13 +166,16 @@ async function copyURL() {
         alert("Короткая ссылка скопирована в буфер обмена!");
       }
     } catch (uploadError) {
-      alert("Не удалось загрузить изображение на imgBB. Используется длинная ссылка.");
-      shortUrl = dataUrl;
+      console.warn("Не удалось загрузить на imgBB:", uploadError);
+      shortUrl = dataUrl; // fallback: длинная ссылка
     }
+
+    // Показываем модальное окно (без вывода ошибки)
     showModal(shortUrl);
   } catch (error) {
-    console.error('Ошибка при копировании URL:', error);
-    alert('Ошибка при создании изображения. Проверьте настройки CORS или Mixed Content.');
+    console.error('Ошибка при создании изображения:', error);
+    // Убираем alert
+    // alert('Ошибка при создании изображения. Проверьте настройки CORS или Mixed Content.');
   } finally {
     copyButton.textContent = "Копировать URL";
     copyButton.disabled = false;
@@ -168,19 +183,29 @@ async function copyURL() {
   }
 }
 
-/* Функция показа модального окна с ссылкой и превью */
+/* Модальное окно: показываем link в textarea */
 function showModal(link) {
   const modal = document.getElementById('modal-overlay');
   const modalLink = document.getElementById('modal-link');
-  const modalImg = document.getElementById('modal-img');
   modalLink.value = link;
-  modalImg.src = link;
   modal.style.display = 'flex';
 }
 
 /* Закрытие модального окна */
 document.getElementById('modal-close').addEventListener('click', () => {
   document.getElementById('modal-overlay').style.display = 'none';
+});
+
+/* Кнопка "Скопировать ссылку" в модальном окне */
+document.getElementById('modal-copy').addEventListener('click', () => {
+  const modalLink = document.getElementById('modal-link');
+  modalLink.select();
+  try {
+    document.execCommand('copy');
+    alert('Ссылка скопирована!');
+  } catch (e) {
+    alert('Скопируйте ссылку вручную');
+  }
 });
 
 /* Переключение темы */
@@ -190,17 +215,17 @@ document.getElementById('theme-toggle').addEventListener('click', () => {
 document.getElementById('theme-toggle-compact').addEventListener('click', () => {
   toggleTheme();
 });
+
 function toggleTheme() {
   const body = document.body;
+  const themeCompactBtn = document.getElementById('theme-toggle-compact');
   if (body.classList.contains('theme-dark')) {
     body.classList.remove('theme-dark');
     body.classList.add('theme-light');
-    document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
-    document.getElementById('theme-toggle-compact').innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
+    themeCompactBtn.innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
   } else {
     body.classList.remove('theme-light');
     body.classList.add('theme-dark');
-    document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
-    document.getElementById('theme-toggle-compact').innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
+    themeCompactBtn.innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
   }
 }
