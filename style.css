@@ -16,7 +16,7 @@ body.theme-dark {
   background: linear-gradient(to bottom, #3a3a3a, #1a1a1a);
   color: #ffffff;
 }
-/* Обновлённая светлая тема: мягкий, нейтральный фон с читаемым тёмным текстом */
+/* Светлая тема – нейтральный, чистый фон */
 body.theme-light {
   background: linear-gradient(to bottom, #f7f7f7, #e0e0e0);
   color: #333333;
@@ -52,7 +52,7 @@ body.theme-light {
   background-color: #3a4ac4;
 }
 
-/* Основной контейнер и карточка */
+/* Контейнер и карточка */
 .container {
   max-width: 1200px;
   width: 100%;
@@ -173,7 +173,6 @@ body.theme-light {
   padding: 1.5rem 1rem;
   text-align: center;
   font-size: 0.9rem;
-  color: inherit;
 }
 .footer p {
   margin-bottom: 1rem;
@@ -203,7 +202,7 @@ body.theme-light {
   animation: fadeIn 0.5s ease-in;
 }
 
-/* Медиа-запросы для мобильных устройств */
+/* Медиа-запросы для мобильных */
 @media (max-width: 768px) {
   .card {
     grid-template-columns: 1fr;

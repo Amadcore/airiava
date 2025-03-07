@@ -41,13 +41,10 @@ function randomizeAvatar() {
   }
 }
 
-async function sharePortrait() {
+/* Функция, которая генерирует итоговое изображение размером 1000x1000px */
+async function generateImageDataURL() {
   const portrait = document.getElementById('portrait');
-  const shareButton = document.querySelector('.btn-action[onclick="sharePortrait()"]');
-  shareButton.textContent = 'Генерация...';
-  shareButton.disabled = true;
-
-  // Создаем временный контейнер 1000x1000
+  // Создаем временный контейнер
   const tempContainer = document.createElement('div');
   tempContainer.style.position = 'absolute';
   tempContainer.style.left = '-9999px';
@@ -56,7 +53,7 @@ async function sharePortrait() {
   tempContainer.style.backgroundColor = portrait.style.backgroundColor || '#000';
   tempContainer.style.overflow = 'hidden';
 
-  // Клонируем слои (img) с размерами 1000x1000
+  // Клонируем слои с новыми размерами
   const images = portrait.querySelectorAll('img');
   images.forEach(img => {
     const clone = img.cloneNode(true);
@@ -79,39 +76,65 @@ async function sharePortrait() {
       scale: 1
     });
     const dataUrl = canvas.toDataURL('image/png');
-    document.body.removeChild(tempContainer);
-    
-    // Если Web Share API поддерживает файлы, пробуем поделиться файлом
-    if (navigator.canShare && navigator.canShare({ files: [] })) {
-      // Преобразуем dataURL в File
-      const response = await fetch(dataUrl);
-      const blob = await response.blob();
-      const file = new File([blob], 'avatar.png', { type: 'image/png' });
-      
-      try {
-        await navigator.share({
-          title: 'Airicore Avatar Forge',
-          text: 'Смотри мой аватар!',
-          files: [file]
-        });
-      } catch (shareError) {
-        console.error('Ошибка при шаринге:', shareError);
-        alert('Ошибка при попытке поделиться.');
-      }
-    } else if (navigator.clipboard) {
-      // Если нет поддержки share, копируем data URL в буфер обмена
-      await navigator.clipboard.writeText(dataUrl);
-      alert('URL изображения скопирован в буфер обмена. Откройте его в браузере для сохранения.');
-    } else {
-      // Если ничего не сработало, открываем новое окно
-      window.open(dataUrl, '_blank');
-      alert('Откройте новое окно и сохраните изображение.');
-    }
-  } catch (error) {
-    console.error('Ошибка при генерации изображения для шаринга:', error);
-    alert('Ошибка при создании изображения.');
+    return dataUrl;
   } finally {
-    shareButton.textContent = 'Поделиться';
-    shareButton.disabled = false;
+    document.body.removeChild(tempContainer);
   }
 }
+
+/* Кнопка "Сохранить": открывает новое окно с изображением */
+async function savePortrait() {
+  const saveButton = document.querySelectorAll('.btn-action')[1];
+  saveButton.textContent = 'Генерация...';
+  saveButton.disabled = true;
+
+  try {
+    const dataUrl = await generateImageDataURL();
+    window.open(dataUrl, '_blank');
+    alert("Откройте новое окно и сохраните изображение через опции браузера.");
+  } catch (error) {
+    console.error('Ошибка генерации изображения:', error);
+    alert('Ошибка при создании изображения.');
+  } finally {
+    saveButton.textContent = 'Сохранить';
+    saveButton.disabled = false;
+  }
+}
+
+/* Кнопка "Копировать URL": копирует dataURL в буфер обмена или открывает новое окно */
+async function copyURL() {
+  const copyButton = document.querySelectorAll('.btn-action')[2];
+  copyButton.textContent = 'Генерация...';
+  copyButton.disabled = true;
+
+  try {
+    const dataUrl = await generateImageDataURL();
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(dataUrl);
+      alert("URL изображения скопирован в буфер обмена. Вы можете вставить его в браузере для сохранения.");
+    } else {
+      window.open(dataUrl, '_blank');
+      alert("Откройте новое окно и сохраните изображение вручную.");
+    }
+  } catch (error) {
+    console.error('Ошибка копирования URL:', error);
+    alert('Ошибка при генерации URL изображения.');
+  } finally {
+    copyButton.textContent = 'Копировать URL';
+    copyButton.disabled = false;
+  }
+}
+
+/* Переключение темы */
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const body = document.body;
+  if (body.classList.contains('theme-dark')) {
+    body.classList.remove('theme-dark');
+    body.classList.add('theme-light');
+    document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
+  } else {
+    body.classList.remove('theme-light');
+    body.classList.add('theme-dark');
+    document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
+  }
+});

@@ -6,19 +6,19 @@
   <title>Airicore Avatar Forge</title>
   <!-- Шрифты: Days One для заголовков, Roboto для остального текста -->
   <link href="https://fonts.googleapis.com/css2?family=Days+One&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  <!-- Font Awesome -->
+  <!-- Font Awesome для иконок -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <!-- Наш CSS -->
   <link rel="stylesheet" href="style.css">
-  <!-- html2canvas для сохранения -->
+  <!-- html2canvas для генерации изображения -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
-  <!-- Скрипт -->
+  <!-- Наш JS -->
   <script src="script.js" defer></script>
 </head>
 <body class="theme-dark">
   <header class="header">
     <h1 class="title">Airicore Avatar Forge</h1>
-    <p class="subtitle">Создай уникальный аватар для своей студии!</p>
+    <p class="subtitle">Создай уникальный аватар для студии</p>
     <button id="theme-toggle" class="theme-toggle">
       <i class="fas fa-sun"></i> Светлая тема
     </button>
@@ -41,40 +41,60 @@
           <!-- Лицо -->
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('face')"><i class="fas fa-arrow-left"></i></button>
-              <button class="btn-control" onclick="nextPart('face')"><i class="fas fa-arrow-right"></i></button>
+              <button class="btn-control" onclick="prevPart('face')">
+                <i class="fas fa-arrow-left"></i>
+              </button>
+              <button class="btn-control" onclick="nextPart('face')">
+                <i class="fas fa-arrow-right"></i>
+              </button>
             </div>
             <span class="control-label">Лицо</span>
           </div>
           <!-- Глаза -->
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('eyes')"><i class="fas fa-arrow-left"></i></button>
-              <button class="btn-control" onclick="nextPart('eyes')"><i class="fas fa-arrow-right"></i></button>
+              <button class="btn-control" onclick="prevPart('eyes')">
+                <i class="fas fa-arrow-left"></i>
+              </button>
+              <button class="btn-control" onclick="nextPart('eyes')">
+                <i class="fas fa-arrow-right"></i>
+              </button>
             </div>
             <span class="control-label">Глаза</span>
           </div>
           <!-- Волосы -->
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('hair')"><i class="fas fa-arrow-left"></i></button>
-              <button class="btn-control" onclick="nextPart('hair')"><i class="fas fa-arrow-right"></i></button>
+              <button class="btn-control" onclick="prevPart('hair')">
+                <i class="fas fa-arrow-left"></i>
+              </button>
+              <button class="btn-control" onclick="nextPart('hair')">
+                <i class="fas fa-arrow-right"></i>
+              </button>
             </div>
             <span class="control-label">Волосы</span>
           </div>
           <!-- Рот -->
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('mouth')"><i class="fas fa-arrow-left"></i></button>
-              <button class="btn-control" onclick="nextPart('mouth')"><i class="fas fa-arrow-right"></i></button>
+              <button class="btn-control" onclick="prevPart('mouth')">
+                <i class="fas fa-arrow-left"></i>
+              </button>
+              <button class="btn-control" onclick="nextPart('mouth')">
+                <i class="fas fa-arrow-right"></i>
+              </button>
             </div>
             <span class="control-label">Рот</span>
           </div>
           <!-- Одежда -->
           <div class="control-item">
             <div class="control-buttons">
-              <button class="btn-control" onclick="prevPart('body')"><i class="fas fa-arrow-left"></i></button>
-              <button class="btn-control" onclick="nextPart('body')"><i class="fas fa-arrow-right"></i></button>
+              <button class="btn-control" onclick="prevPart('body')">
+                <i class="fas fa-arrow-left"></i>
+              </button>
+              <button class="btn-control" onclick="nextPart('body')">
+                <i class="fas fa-arrow-right"></i>
+              </button>
             </div>
             <span class="control-label">Одежда</span>
           </div>
@@ -91,8 +111,8 @@
           <button class="btn-action" onclick="savePortrait()">
             <i class="fas fa-save"></i> Сохранить
           </button>
-          <button class="btn-action" onclick="sharePortrait()">
-            <i class="fas fa-share-alt"></i> Поделиться
+          <button class="btn-action" onclick="copyURL()">
+            <i class="fas fa-copy"></i> Копировать URL
           </button>
         </div>
       </div>
