@@ -43,8 +43,8 @@ function randomizeAvatar() {
 
 function savePortrait() {
   const portrait = document.getElementById('portrait');
-  const saveButton = document.querySelectorAll('.btn-action')[1]; // Вторая кнопка - "Сохранить"
-  saveButton.textContent = 'Сохранение...';
+  const saveButton = document.querySelectorAll('.btn-action')[1]; // Вторая кнопка — "Сохранить"
+  saveButton.textContent = 'Генерация изображения...';
   saveButton.disabled = true;
 
   // Создаем временный контейнер 1000x1000
@@ -68,7 +68,6 @@ function savePortrait() {
     clone.style.objectFit = 'cover';
     tempContainer.appendChild(clone);
   });
-
   document.body.appendChild(tempContainer);
 
   html2canvas(tempContainer, {
@@ -78,22 +77,16 @@ function savePortrait() {
     height: 1000,
     scale: 1
   }).then(canvas => {
-    canvas.toBlob(blob => {
-      if (blob) {
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `avatar_${Date.now()}.png`;
-        link.click();
-      } else {
-        alert('Не удалось создать изображение.');
-      }
-      saveButton.textContent = 'Сохранить';
-      saveButton.disabled = false;
-      document.body.removeChild(tempContainer);
-    }, 'image/png');
+    const dataUrl = canvas.toDataURL('image/png');
+    // Открываем новое окно с изображением
+    window.open(dataUrl, '_blank');
+    alert("Откройте новое окно и удерживайте изображение для сохранения.");
+    saveButton.textContent = 'Сохранить';
+    saveButton.disabled = false;
+    document.body.removeChild(tempContainer);
   }).catch(error => {
     console.error('Ошибка сохранения:', error);
-    alert('Ошибка при сохранении. Запустите через локальный сервер.');
+    alert('Ошибка при создании изображения.');
     saveButton.textContent = 'Сохранить';
     saveButton.disabled = false;
     document.body.removeChild(tempContainer);
